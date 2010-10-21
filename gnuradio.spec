@@ -12,7 +12,7 @@ BuildRequires:  fftw-devel
 BuildRequires: 	libboost-devel
 #BuildRequires:	libwxPythonGTK2.8
 BuildRequires: 	libwxgtk2.8-devel
-BuildRequires: 	libalsa-oss-devel
+BuildRequires: 	%{mklibname alsa-oss}-devel
 BuildRequires: 	libSDL-devel
 BuildRequires: 	libportaudio-devel
 BuildRequires: 	libjack-devel
@@ -70,9 +70,8 @@ GNU Radio USRP files
 #%configure2_5x --enable-all-components  --enable-doxygen  --enable-latex-doc  --disable-gr-qtgui  --enable-gr-audio-oss --disable-gr-audio-osx --disable-comedi --disable-gr-comedi --disable-gr-gcell --disable-gcell --disable-gr-audio-windows --disable-usrp --disable-gr-usrp --disable-usrp2 --disable-gr-usrp2 --disable-gr-gpio --disable-gr-radar-mono --disable-gr-sounder --disable-gr-utils --disable-usrp2-firmware --disable-gr-audio-jack
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 #sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
-#make
 %configure2_5x --enable-libgc --disable-gr-audio-jack
-make
+%make
 
 
 %install
