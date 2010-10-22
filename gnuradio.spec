@@ -23,6 +23,7 @@ BuildRequires:  xmlto
 BuildRequires:  graphviz
 BuildRequires:	wxPython
 BuildRequires:  python-numpy
+BuildRequires:  pygtk2.0-libglade
 BuildRequires:	sdcc
 BuildRequires:	libomniorb
 BuildRequires:	ltp
@@ -90,8 +91,8 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %doc ChangeLog README README.hacking NEWS
-%{_bindir}/usrp*
-#%{_bindir}/*
+#%{_bindir}/usrp*
+%{_bindir}/*
 %{_libdir}/libgnuradio-core*
 %{_libdir}/libusrp.*
 %{_libdir}/libusrp2.*
@@ -106,8 +107,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/python2.6/site-packages/gnuradio
 %{_libdir}/python2.6/site-packages/usrpm
 %{_datadir}/usrp
-%{_datadir}/gnuradio/examples/*
-%{_datadir}/gnuradio/grc/blocks/
+#%{_datadir}/gnuradio/examples/*
+#%{_datadir}/gnuradio/grc/blocks/
 %{_datadir}/gnuradio/grc/freedesktop
 %{_datadir}/gnuradio/*
 %{_sysconfdir}/gnuradio
