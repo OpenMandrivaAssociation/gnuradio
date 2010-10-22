@@ -29,6 +29,7 @@ BuildRequires:  libgsl-devel
 BuildRequires:  libqwt-devel
 BuildRequires:  python-cheetah
 BuildRequires:  python-lxml
+BuildRequires:  guile
 Requires:	libgsl-devel
 
 %description
