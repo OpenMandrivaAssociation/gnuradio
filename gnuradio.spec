@@ -11,7 +11,7 @@ BuildRequires:  cppunit-devel
 BuildRequires:  fftw-devel
 BuildRequires: 	libboost-devel
 #BuildRequires:	libwxPythonGTK2.8
-BuildRequires: 	libwxgtk2.8-devel
+BuildRequires: 	%{mklibname wxgtk2.8}-devel
 BuildRequires: 	%{mklibname alsa-oss}-devel
 BuildRequires: 	libSDL-devel
 BuildRequires: 	libportaudio-devel
