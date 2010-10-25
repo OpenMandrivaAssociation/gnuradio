@@ -6,6 +6,7 @@ Group:          Networking/Other
 License:        GPLv3
 URL:            http://www.gnuradio.org
 Source0:        ftp://ftp.gnu.org/gnu/gnuradio/gnuradio-%{version}.tar.gz
+Patch1:		usrpgccpatch.diff
 BuildRequires:  fftw-devel
 BuildRequires:  cppunit-devel
 BuildRequires:  fftw-devel
@@ -67,6 +68,7 @@ GNU Radio USRP files
 
 %prep
 %setup -q
+%patch1 -p0
 
 %build
 ./bootstrap
