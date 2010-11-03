@@ -108,9 +108,7 @@ rm -rf $RPM_BUILD_ROOT
 #%{_libdir}/libgromnithread*
 #%{_libdir}/libgr_audio_alsa*
 %{_libdir}/pkgconfig/*.pc  
-%{_libdir}/python2.6/site-packages/grc_gnuradio/* 
-%{_libdir}/python2.6/site-packages/gnuradio
-%{_libdir}/python2.6/site-packages/usrpm
+%py_platsitedir/*
 %{_datadir}/usrp
 #%{_datadir}/gnuradio/examples/*
 #%{_datadir}/gnuradio/grc/blocks/
@@ -136,5 +134,3 @@ rm -rf $RPM_BUILD_ROOT
 
 %files usrp
 %defattr(-,root,root,-)
-
-
