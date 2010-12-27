@@ -1,39 +1,45 @@
 Name:           gnuradio
 Version:        3.3.0
-Release:        %mkrel 4
+Release:        %mkrel 5
 Summary:        Software defined radio framework
 Group:          Networking/Other 
 License:        GPLv3
 URL:            http://www.gnuradio.org
 Source0:        ftp://ftp.gnu.org/gnu/gnuradio/gnuradio-%{version}.tar.gz
 Patch1:		usrpgccpatch.diff
-BuildRequires:  fftw-devel
-BuildRequires:  cppunit-devel
-BuildRequires:  fftw-devel
-BuildRequires: 	libboost-devel
-#BuildRequires:	libwxPythonGTK2.8
-BuildRequires: 	libwxgtk2.8-devel
-BuildRequires: 	libalsa-oss-devel
-BuildRequires: 	libSDL-devel
-BuildRequires: 	libportaudio-devel
-BuildRequires: 	libjack-devel
-BuildRequires:	swig
+BuildRequires:	cppunit-devel
 BuildRequires:	doxygen
-BuildRequires:  libusb-devel
-BuildRequires:  xmlto
-BuildRequires:  graphviz
-BuildRequires:	wxPython
-BuildRequires:  python-numpy
-BuildRequires:  pygtk2.0-libglade
-BuildRequires:	sdcc
+BuildRequires:	fftw-devel
+BuildRequires:	graphviz
+BuildRequires:	guile
+BuildRequires:	libSDL-devel
+BuildRequires:	libalsa-oss-devel
+BuildRequires:	libboost-devel
+BuildRequires:	libgsl-devel
+BuildRequires:	libjack-devel
 BuildRequires:	libomniorb
+BuildRequires:	libportaudio-devel
+BuildRequires:	libqwt-devel
+BuildRequires:	libusb-devel
+BuildRequires:	libwxgtk2.8-devel
+BuildRequires:	libqwt-devel
+BuildRequires:	libqwtplot3d-devel
 BuildRequires:	ltp
-BuildRequires:  libgsl-devel
-BuildRequires:  libqwt-devel
-BuildRequires:  python-cheetah
-BuildRequires:  python-lxml
-BuildRequires:  guile
-Requires:	libgsl-devel
+BuildRequires:	pygtk2.0-libglade
+BuildRequires:	python-devel
+BuildRequires:	python-cheetah
+BuildRequires:	python-lxml
+BuildRequires:	python-numpy
+BuildRequires:	python-qt4-devel
+BuildRequires:	python-qwt
+BuildRequires:	sdcc2.9
+BuildRequires:	swig
+BuildRequires:	wxPython
+BuildRequires:	xmlto
+Requires:	python-numpy
+Requires:	wxPython
+Requires:	python-scipy
+Requires:	portaudio
 
 %description
 GNU Radio is a collection of software that when combined with minimal 
@@ -43,28 +49,54 @@ that it turns the digital modulation schemes used in today's high
 performance wireless devices into software problems.
 
 %package devel
-Summary:        GNU Radio
-Group:          Networking/Other 
-Requires:       %{name} = %{version}-%{release}
+Summary:	GNU Radio
+Group:		Development/Other
+Requires:	%{name} = %{version}-%{release}
 
 %description devel
-GNU Radio Headers
+GNU Radio Headers.
 
 %package doc
-Summary:        GNU Radio
-Group:          Networking/Other 
-Requires:       %{name} = %{version}-%{release}
+Summary:	GNU Radio
+Group:		Networking/Other
+Requires:	%{name} = %{version}-%{release}
 
 %description doc
-GNU Radio Documentation
+GNU Radio Documentation.
 
-%package usrp
+%package examples
+Summary:	GNU Radio
+Group:		Networking/Other
+Requires:	%{name} = %{version}-%{release}
+
+%description examples
+GNU Radio examples.
+
+%package -n usrp
+Summary:	Universal Software Radio Peripheral
+Group:		Networking/Other
+Requires:	%{name} = %{version}-%{release}
+Obsoletes:	%{name}-usrp
+Provides:	%{name}-usrp
+
+%description -n usrp
+Gnu Radio Universal Software Radio Peripheral software.
+
+%package -n usrp-devel
+Summary:	Universal Software Radio Peripheral
+Group:		Development/Other
+Requires:	usrp = %{version}-%{release}
+
+%description -n usrp-devel
+GNU Radio USRP headers.
+
+%package -n usrp-doc
 Summary:        Universal Software Radio Peripheral
-Group:          Networking/Other 
-Requires:       %{name} = %{version}-%{release}
+Group:          Networking/Other
+Requires:	usrp = %{version}-%{release}
 
-%description usrp
-GNU Radio USRP files
+%description -n usrp-doc
+Universal Software Radio Peripheral documentation.
 
 %prep
 %setup -q
@@ -72,65 +104,84 @@ GNU Radio USRP files
 %patch1 -p0
 %endif
 
+# force regeneration of cached moc output files
+find . -name "*_moc.cc" -exec rm {} \;
 
 %build
-./bootstrap
-#%configure2_5x --enable-all-components  --enable-doxygen  --enable-latex-doc  --disable-gr-qtgui  --enable-gr-audio-oss --disable-gr-audio-osx --disable-comedi --disable-gr-comedi --disable-gr-gcell --disable-gcell --disable-gr-audio-windows --disable-usrp --disable-gr-usrp --disable-usrp2 --disable-gr-usrp2 --disable-gr-gpio --disable-gr-radar-mono --disable-gr-sounder --disable-gr-utils --disable-usrp2-firmware --disable-gr-audio-jack
-sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
-#sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
-%configure2_5x --enable-libgc --disable-gr-audio-jack
-%make
+%configure2_5x \
+	--enable-doxygen \
+	--enable-latex-doc \
+	--disable-gr-audio-oss \
+	--enable-usrp \
+	--enable-gnuradio-core \
+	--enable-gnuradio-examples \
+	--with-pythondir=%{py_puresitedir} \
+	--with-qwt-incdir=%{_includedir} \
+	--with-qwtplot3d-incdir=%{_includedir}
 
+%make LIBS="-lpython%{py_ver} -lpthread"
 
 %install
 rm -rf %{buildroot}
 %makeinstall_std
 
+#we don't want these
+find %{buildroot} -name "*.la" -exec rm -rf {} \;
+
 %clean
-rm -rf $RPM_BUILD_ROOT
-
-%post -p /sbin/ldconfig
-
-%postun -p /sbin/ldconfig
+rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-%doc ChangeLog README README.hacking NEWS
-#%{_bindir}/usrp*
-%{_bindir}/*
-%{_libdir}/libgnuradio-core*
-%{_libdir}/libusrp.*
-%{_libdir}/libusrp2.*
-%{_libdir}/libgnuradio-*
-%{_libdir}/libgruel*
-%{_libdir}/libusrp-*
-%{_libdir}/libusrp2-*
-#%{_libdir}/libgromnithread*
-#%{_libdir}/libgr_audio_alsa*
-%{_libdir}/pkgconfig/*.pc  
-%py_platsitedir/*
-%{_datadir}/usrp
-#%{_datadir}/gnuradio/examples/*
-#%{_datadir}/gnuradio/grc/blocks/
-%{_datadir}/gnuradio/grc/freedesktop
-%{_datadir}/gnuradio/*
-%{_sysconfdir}/gnuradio
-%config(noreplace)%{_sysconfdir}/gnuradio/conf.d/gr-audio-alsa.conf
-%config(noreplace)%{_sysconfdir}/gnuradio/conf.d/gnuradio-core.conf
-%config(noreplace)%{_sysconfdir}/gnuradio/conf.d/gr-wxgui.conf
+%{python_sitearch}/%{name}
+%{python_sitearch}/grc_gnuradio
+%exclude %{python_sitearch}/%{name}/_usrp2.so
+%exclude %{python_sitearch}/%{name}/usrp*  
+%dir %{_sysconfdir}/%{name} 
+%dir %{_sysconfdir}/%{name}/conf.d
+%config(noreplace)%{_sysconfdir}/%{name}/conf.d/*.conf
+%{_bindir}/%{name}*
+%{_bindir}/*.py
+%exclude %{_bindir}/usrp*.py
+%{_bindir}/create-gnuradio-out-of-tree-project
+%{_bindir}/grc_setup_freedesktop
+%{_libdir}/lib*.so.*
+%exclude %{_libdir}/libusrp*.so.*
 
 %files devel
 %defattr(-,root,root,-)
-%{_includedir}/gnuradio
-%{_includedir}/usrp*
-%{_includedir}/gruel/*
+%{_includedir}/%{name}
+%{_includedir}/gruel
+%{_libdir}/lib*.so
+%exclude %{_libdir}/libusrp*.so
+%{_libdir}/pkgconfig/*.pc
 
 %files doc
 %defattr(-,root,root,-)
-%{_docdir}/usrp-%{version}/*
-%{_docdir}/%{name}-%{version}/html/*
-%{_docdir}/%{name}-%{version}/xml/*
-%{_docdir}/%{name}-%{version}/README*
+%doc ChangeLog README README.hacking NEWS AUTHORS
+%{_docdir}/%{name}-%{version}
 
-%files usrp
+%files -n usrp-doc
 %defattr(-,root,root,-)
+%{_docdir}/usrp-%{version}
+
+%files examples
+%defattr(-,root,root,-)
+%{_datadir}/%{name}
+
+%files -n usrp
+%defattr(-,root,root,-)
+%{_bindir}/usrp*
+%{_bindir}/gpio*
+%{_bindir}/find_usrps
+%{_bindir}/lsusrp
+%{_datadir}/usrp
+%{_libdir}/libusrp*.so.*
+%{python_sitearch}/usrpm
+%{python_sitearch}/%{name}/_usrp2.so
+%{python_sitearch}/%{name}/usrp*
+
+%files -n usrp-devel
+%defattr(-,root,root,-)
+%{_libdir}/libusrp*.so
+%{_includedir}/usrp*
