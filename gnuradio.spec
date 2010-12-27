@@ -1,3 +1,8 @@
+# TODO:
+# - better summaries and descriptions
+# - libify gnuradio
+# - maybe some more?!
+
 Name:           gnuradio
 Version:        3.3.0
 Release:        %mkrel 5
@@ -88,7 +93,7 @@ Group:		Development/Other
 Requires:	usrp = %{version}-%{release}
 
 %description -n usrp-devel
-GNU Radio USRP headers.
+Gnu Radio Universal Software Radio Peripheral development files and headers.
 
 %package -n usrp-doc
 Summary:        Universal Software Radio Peripheral
@@ -96,7 +101,7 @@ Group:          Networking/Other
 Requires:	usrp = %{version}-%{release}
 
 %description -n usrp-doc
-Universal Software Radio Peripheral documentation.
+Gnu Radio Universal Software Radio Peripheral documentation.
 
 %prep
 %setup -q
@@ -133,8 +138,8 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-%{python_sitearch}/%{name}
 %{python_sitearch}/grc_gnuradio
+%{python_sitearch}/%{name}
 %exclude %{python_sitearch}/%{name}/_usrp2.so
 %exclude %{python_sitearch}/%{name}/usrp*  
 %dir %{_sysconfdir}/%{name} 
@@ -145,16 +150,18 @@ rm -rf %{buildroot}
 %exclude %{_bindir}/usrp*.py
 %{_bindir}/create-gnuradio-out-of-tree-project
 %{_bindir}/grc_setup_freedesktop
-%{_libdir}/lib*.so.*
-%exclude %{_libdir}/libusrp*.so.*
+%{_libdir}/libgnuradio*.so.*
+%{_libdir}/libgruel*.so.*
 
 %files devel
 %defattr(-,root,root,-)
 %{_includedir}/%{name}
 %{_includedir}/gruel
-%{_libdir}/lib*.so
-%exclude %{_libdir}/libusrp*.so
-%{_libdir}/pkgconfig/*.pc
+%{_libdir}/libgnuradio*.so
+%{_libdir}/libgruel.so
+%{_libdir}/pkgconfig/gnuradio*.pc
+%{_libdir}/pkgconfig/gr-wxgui.pc
+%{_libdir}/pkgconfig/gruel.pc
 
 %files doc
 %defattr(-,root,root,-)
@@ -185,3 +192,4 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %{_libdir}/libusrp*.so
 %{_includedir}/usrp*
+%{_libdir}/pkgconfig/usrp*.pc
