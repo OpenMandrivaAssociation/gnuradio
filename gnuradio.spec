@@ -5,7 +5,7 @@
 
 Name:           gnuradio
 Version:        3.3.0
-Release:        %mkrel 6
+Release:        %mkrel 7
 Summary:        Software defined radio framework
 Group:          Networking/Other 
 License:        GPLv3
@@ -18,7 +18,6 @@ BuildRequires:	fftw-devel
 BuildRequires:	graphviz
 BuildRequires:	guile
 BuildRequires:	libSDL-devel
-BuildRequires:	libalsa-oss-devel
 BuildRequires:	libboost-devel
 BuildRequires:	libgsl-devel
 BuildRequires:	libjack-devel
@@ -40,8 +39,10 @@ BuildRequires:	python-qwt
 
 %if %{mdkversion} >= 201100
 BuildRequires:	sdcc2.9
+BuildRequires:	libalsa-oss-devel
 %else
 BuildRequires:	sdcc
+BuildRequires:	%{_lib}alsa-oss-devel
 %endif
 
 BuildRequires:	swig
