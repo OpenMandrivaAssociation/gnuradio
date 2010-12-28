@@ -5,7 +5,7 @@
 
 Name:           gnuradio
 Version:        3.3.0
-Release:        %mkrel 5
+Release:        %mkrel 6
 Summary:        Software defined radio framework
 Group:          Networking/Other 
 License:        GPLv3
@@ -37,7 +37,13 @@ BuildRequires:	python-lxml
 BuildRequires:	python-numpy
 BuildRequires:	python-qt4-devel
 BuildRequires:	python-qwt
+
+%if %{mdkversion} >= 201100
 BuildRequires:	sdcc2.9
+%else
+BuildRequires:	sdcc
+%endif
+
 BuildRequires:	swig
 BuildRequires:	wxPython
 BuildRequires:	xmlto
