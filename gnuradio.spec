@@ -5,7 +5,7 @@
 
 Name:           gnuradio
 Version:        3.3.0
-Release:        %mkrel 7
+Release:        %mkrel 8
 Summary:        Software defined radio framework
 Group:          Networking/Other 
 License:        GPLv3
@@ -51,7 +51,6 @@ BuildRequires:	xmlto
 Requires:	python-numpy
 Requires:	wxPython
 Requires:	python-scipy
-Requires:	portaudio
 
 %description
 GNU Radio is a collection of software that when combined with minimal 
