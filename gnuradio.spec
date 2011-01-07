@@ -205,6 +205,7 @@ level (non-GNU Radio) hardware interface.
 Summary:	Client side library for the USRPhardware 2
 Group:		Development/Other
 Requires:	%{libusrp2} = %{version}-%{release}
+Provides:	usrp2-devel = %{version}-%{release}
 
 %description -n %{devusrp2}
 The Universal Software Radio Peripheral 2 (USRP2) is a GbE-connected,
@@ -804,7 +805,7 @@ GNU Radio.
 ##############
 %package -n %{devgruel}
 Summary:	GNU Radio Utility Etcetera Library
-Group:		Development/Others
+Group:		Development/Other
 Requires:	%{libgruel} = %{version}-%{release}
 
 %description -n %{devgruel}
