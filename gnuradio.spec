@@ -4,7 +4,7 @@
 
 Name:           gnuradio
 Version:        3.3.0
-Release:        %mkrel 10
+Release:        %mkrel 11
 Summary:        Software defined radio framework
 Group:          Networking/Other 
 License:        GPLv3+
@@ -1062,7 +1062,6 @@ Group:		Networking/Other
 Requires:	python-%{name}-core = %{version}-%{release}
 Requires:	python-numpy
 Requires:	python-opengl
-Requires:	python-wxgtk2.8
 
 %description -n python-%{name}-wxgui
 This package provides high level GUI construction classes based upon the wxPython bindings 
