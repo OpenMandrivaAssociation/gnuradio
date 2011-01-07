@@ -4,7 +4,7 @@
 
 Name:           gnuradio
 Version:        3.3.0
-Release:        %mkrel 9
+Release:        %mkrel 10
 Summary:        Software defined radio framework
 Group:          Networking/Other 
 License:        GPLv3+
@@ -132,7 +132,6 @@ operation.
 %package -n %{libusrp}
 Summary:	Client side library for the USRP(1) hardware
 Group:		System/Libraries
-Suggests:	usrp-doc
 
 %description -n %{libusrp}
 The Universal Software Radio Peripheral (USRP) is an USB-connected,
@@ -1217,7 +1216,6 @@ Requires:	python-%{name}-usrp2 = %{version}-%{release}
 Requires:	python-%{name}-wxgui = %{version}-%{release}
 Requires:	python-matplotlib
 Requires:	python-scipy
-Requires:	python-tk
 Requires:	python-qt4
 Requires:	python-qwt
 Obsoletes:	usrp < %{version}-%{release}
