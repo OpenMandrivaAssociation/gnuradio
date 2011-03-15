@@ -4,7 +4,7 @@
 
 Name:           gnuradio
 Version:        3.3.0
-Release:        %mkrel 11
+Release:        %mkrel 12
 Summary:        Software defined radio framework
 Group:          Networking/Other 
 License:        GPLv3+
