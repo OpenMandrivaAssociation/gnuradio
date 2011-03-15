@@ -16,6 +16,7 @@ BuildRequires:	cppunit-devel
 BuildRequires:	doxygen
 BuildRequires:	fftw-devel
 BuildRequires:	graphviz
+BuildRequires:	xdg-utils
 BuildRequires:	guile
 BuildRequires:	libSDL-devel
 BuildRequires:	libboost-devel
