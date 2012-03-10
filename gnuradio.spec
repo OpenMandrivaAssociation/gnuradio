@@ -1255,9 +1255,9 @@ This package provides commonly used utilities for GNU Radio.
 
 %prep
 %setup -q
-%patch0 -p0 -b .cflags
+#%patch0 -p0 -b .cflags
 %if %mdkversion >= 201100
-%patch1 -p0
+#%patch1 -p0
 %endif
 
 # force regeneration of cached moc output files
