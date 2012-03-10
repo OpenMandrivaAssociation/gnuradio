@@ -3,8 +3,8 @@
 # - maybe some more?!
 
 Name:           gnuradio
-Version:        3.3.0
-Release:        %mkrel 12
+Version:        3.5.2
+Release:        1
 Summary:        Software defined radio framework
 Group:          Networking/Other 
 License:        GPLv3+
@@ -21,12 +21,12 @@ BuildRequires:	guile
 BuildRequires:	libSDL-devel
 BuildRequires:	libboost-devel
 BuildRequires:	libgsl-devel
-BuildRequires:	libjack-devel
+BuildRequires:	pkgconfig(jack)
 BuildRequires:	libomniorb
 BuildRequires:	libportaudio-devel
 BuildRequires:	libqwt-devel
 BuildRequires:	libusb-devel
-BuildRequires:	libwxgtk2.8-devel
+BuildRequires:	wxGTK-devel
 BuildRequires:	libqwt-devel
 BuildRequires:	libqwtplot3d-devel
 BuildRequires:	ltp
