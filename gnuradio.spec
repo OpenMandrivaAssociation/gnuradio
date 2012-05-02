@@ -27,7 +27,7 @@
 %define devgruel	%mklibname gruel -d
 
 Name:		gnuradio
-Version:	3.5.3.1
+Version:	3.5.3.2
 Release:	1
 Summary:	Software defined radio framework
 Group:		Development/Other 
