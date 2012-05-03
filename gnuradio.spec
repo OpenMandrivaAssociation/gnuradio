@@ -68,7 +68,8 @@ BuildRequires:	liborc-devel
 BuildRequires:	uhd-devel
 BuildRequires:	python-numpy
 BuildRequires:	libcanberra-gtk-devel
-BuildRequires:	%{_lib}qwt-devel
+BuildRequires:	texlive
+#BuildRequires:	%{_lib}qwt-devel
 BuildRequires:	desktop-file-utils
 
 Requires(pre):	shadow-utils
