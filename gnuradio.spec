@@ -381,7 +381,7 @@ This package contains header files needed by developers.
 %{_libdir}/lib%{name}-core*.so
 %{_libdir}/lib%{name}-fcd.so
 %{_libdir}/pkgconfig/gnuradio-fcd.pc
-%{_libdir}/lib%{name}-fcd-3.5.3.1.so
+%{_libdir}/lib%{name}-fcd-%{version}.so
 
 ############################
 #libgnuradio-vocoder
