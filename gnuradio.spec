@@ -69,6 +69,7 @@ BuildRequires:	uhd-devel
 BuildRequires:	python-numpy
 BuildRequires:	libcanberra-gtk-devel
 BuildRequires:	texlive
+BuildRequires:	qt4-devel
 #BuildRequires:	%{_lib}qwt-devel
 BuildRequires:	desktop-file-utils
 
