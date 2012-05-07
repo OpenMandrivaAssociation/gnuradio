@@ -25,20 +25,25 @@
 %define devvideo_sdl	%mklibname %{name}-video-sdl -d
 %define libgruel	%mklibname gruel %{major}
 %define devgruel	%mklibname gruel -d
+%define libfcd		%mklibname %{name}-fcd %{major}
+%define devfcd		%mklibname %{name}-fcd -d
 
 Name:		gnuradio
-Version:	3.5.3.2
+Version:	3.6.0
 Release:	1
 Summary:	Software defined radio framework
 Group:		Development/Other 
 License:	GPLv3+
 URL:		http://www.gnuradio.org
 Source0:	%{name}-%{version}.tar.gz
-# Tarball created from git using 'make-tarball' script. See notes in script
+# Create tarball from git with:
+# $ ./make-tarball gnuradio http://gnuradio.org/git/gnuradio.git
+# See note in make-tarball script
+# Unlike the release tarballs the created tarball will be Cmake enabled.
 Source1:	make-tarball
 Patch0:		gnuradio-3.5.1-mga-fix_install_paths_in_CMakeLists.patch
-Patch1:		gnuradio-3.5.1-fda-qa_gri_mmse_fir_interpolator_cc.cc.patch
 Patch2:		gnuradio-3.5.1-fix-linkage.patch
+
 BuildRequires:	cmake
 BuildRequires:	sdcc
 BuildRequires:	fftw-devel
@@ -53,12 +58,12 @@ BuildRequires:	doxygen
 BuildRequires:	libusb-devel
 BuildRequires:	pkgconfig(alsa)
 BuildRequires:	pkgconfig(sdl)
-#BuildRequires:	pkgconfig(guile-2.0)
+BuildRequires:	pkgconfig(guile-2.0)
 BuildRequires:	portaudio-devel
 BuildRequires:	libtool
 BuildRequires:	gsl-devel
 BuildRequires:	python-qt4-devel
-BuildRequires:	python-qwt
+#BuildRequires:	python-qwt
 BuildRequires:	libqwtplot3d-devel
 BuildRequires:	python-cheetah
 BuildRequires:	xdg-utils
@@ -68,9 +73,7 @@ BuildRequires:	liborc-devel
 BuildRequires:	uhd-devel
 BuildRequires:	python-numpy
 BuildRequires:	libcanberra-gtk-devel
-BuildRequires:	texlive
-BuildRequires:	qt4-devel
-#BuildRequires:	%{_lib}qwt-devel
+BuildRequires:	qwt-devel
 BuildRequires:	desktop-file-utils
 
 Requires(pre):	shadow-utils
@@ -94,6 +97,7 @@ Requires:	%{libvolk}
 Requires:	%{libaudio}
 Requires:	%{libvocoder}
 Requires:	%{libgruel}
+Requires:	%{libfcd}
 Requires:	python-gnuradio-atsc
 Requires:	python-gnuradio-core
 Requires:	python-gnuradio-qtgui
@@ -105,6 +109,7 @@ Requires:	python-gnuradio-gruel
 Requires:	python-gnuradio-vocoder
 Requires:	python-gnuradio-audio
 Requires:	python-gnuradio-uhd
+Requires:	python-gnuradio-fcd
 
 Obsoletes:	%{name} < %{version}-%{release}
 Provides:	%{name} = %{version}-%{release}
@@ -185,7 +190,7 @@ Obsoletes:	%{_lib}gnuradio-usrp-devel < 3.5.1
 This package contains header files needed by developers.
 
 %files -n %{devuhd}
-#%{_includedir}/%{name}/gr_uhd_*.h
+%{_includedir}/%{name}/gr_uhd_*.h
 %{_libdir}/pkgconfig/%{name}-uhd.pc
 %{_libdir}/lib%{name}-uhd*.so
 
@@ -233,6 +238,8 @@ It is a library that was introduced into GNU Radio in December 2010.
 
 %files -n %{libvolk}
 %{_libdir}/libvolk.so.%{major}*
+# not sure where to put this:
+%{_bindir}/volk_profile
 
 
 ############################
@@ -316,7 +323,7 @@ Obsoletes:	%{_lib}gnuradio-audio-portaudio-devel < 3.5.1
 This package contains header files needed by developers.
 
 %files -n %{devaudio}
-#%{_includedir}/%{name}/gr_audio_*.h
+%{_includedir}/%{name}/gr_audio_*.h
 %{_libdir}/pkgconfig/%{name}-audio.pc
 %{_libdir}/lib%{name}-audio*.so
 
@@ -338,7 +345,6 @@ This package contains the core GNU Radio libraries.
 
 %files -n %{libcore}
 %{_libdir}/lib%{name}-core*.so.%{major}*
-%{_libdir}/libgnuradio-fcd-%{version}.so.*
 
 
 ############################
@@ -358,8 +364,6 @@ This package contains header files needed by developers.
 %dir %{_includedir}/%{name}
 %{_includedir}/%{name}/gr_*.h
 %{_includedir}/%{name}/gri_*.h
-%{_includedir}/%{name}/fcd_api.h
-%{_includedir}/%{name}/fcd_source_c.h
 
 %{_includedir}/%{name}/ccomplex_*.h
 %{_includedir}/%{name}/complex_*.h
@@ -380,9 +384,6 @@ This package contains header files needed by developers.
 %{_includedir}/%{name}/viterbi.h
 %{_libdir}/pkgconfig/%{name}-core.pc
 %{_libdir}/lib%{name}-core*.so
-%{_libdir}/lib%{name}-fcd.so
-%{_libdir}/pkgconfig/gnuradio-fcd.pc
-%{_libdir}/lib%{name}-fcd-%{version}.so
 
 ############################
 #libgnuradio-vocoder
@@ -446,7 +447,6 @@ This package contains header files needed by developers.
 %{_includedir}/%{name}/noaa_*.h
 %{_libdir}/lib%{name}-noaa*.so
 %{_libdir}/pkgconfig/%{name}-noaa.pc
-
 
 ############################
 #libgnuradio-pager0
@@ -620,6 +620,34 @@ This package contains header files needed by developers.
 %{_libdir}/pkgconfig/gruel.pc
 %{_libdir}/libgruel*.so
 
+############################
+#libfcd
+
+%package -n %{libfcd}
+Summary:	Fun Cube Dongle libs
+Group:		System/Libraries
+
+%description -n %{libfcd}
+Fun Cube Dongle library files
+
+%files -n %{libfcd}
+%{_libdir}/lib%{name}-fcd*.so.%{major}*
+
+############################
+%package -n %{devfcd}
+Summary:	fcd
+Group:		System/Libraries
+Requires:	%{libfcd} = %{version}-%{release}
+
+%description -n %{devfcd}
+This package contains header files needed by developers.
+
+%files -n %{devfcd}
+
+%{_includedir}/%{name}/fcd_api.h
+%{_includedir}/%{name}/fcd_source_c.h
+%{_libdir}/pkgconfig/%{name}-fcd.pc
+%{_libdir}/lib%{name}-fcd*.so
 
 ############################
 ############################
@@ -785,24 +813,6 @@ and daughterboard drivers.
 %{_bindir}/uhd_*.py
 
 
-
-
-
-############################
-%package -n python-%{name}-fcd
-Summary:	Python bindings for GNU Radio fcd driver
-Group:		Development/Python
-Requires:	python-%{name}-core = %{version}-%{release}
-Obsoletes:	python-gnuradio-fcd < 3.5.1
-Obsoletes:	python-gnuradio-fcd < 3.5.1
-
-%description -n python-%{name}-fcd
-This package provides the Python interface to the GNU Radio uhd driver
-and daughterboard drivers.
-
-%files -n python-%{name}-fcd
-%{python_sitearch}/%{name}/fcd
-
 ############################
 %package -n python-%{name}-video-sdl
 Summary:	GNU Radio SDL Interface Library
@@ -833,6 +843,17 @@ for wxWidgets.
 %config(noreplace) %{_sysconfdir}/%{name}/conf.d/gr-wxgui.conf
 %{python_sitearch}/%{name}/wxgui
 
+############################
+%package -n python-%{name}-fcd
+Summary:	GNU Radio Fun Cube Dongle
+Group:		Development/Python
+
+%description -n python-%{name}-fcd
+GNU Radio Fun Cube Dongle
+
+%files -n python-%{name}-fcd
+%{python_sitearch}/%{name}/fcd
+
 
 ############################
 ############################
@@ -861,7 +882,6 @@ GRC is a graphical flowgraph editor for the GNU Software Radio.
 %{_datadir}/mime/application/*.xml
 %{_iconsdir}/hicolor/*/apps/gnuradio-grc.png
 %{_datadir}/%{name}/grc
-%{_prefix}/libexec/%{name}/grc_setup_freedesktop
 %{python_sitearch}/%{name}/grc
 %{python_sitearch}/grc_%{name}
 
@@ -918,7 +938,6 @@ This package provides commonly used utilities for GNU Radio.
 %{python_sitearch}/%{name}/pyqt_filter.*
 %{python_sitearch}/%{name}/pyqt_plot.*
 %{_bindir}/gnuradio-config-info
-%{_bindir}/volk_profile
 # This should really be in a devel package
 %{_libdir}/pkgconfig/gr-wxgui.pc
 # Not sure if this lives here
@@ -928,6 +947,7 @@ This package provides commonly used utilities for GNU Radio.
 ############################
 %prep
 %setup -q -n %{name}-%{version}
+%patch0 -p0 -b .gnuradio-3.5.1-mga-fix_install_paths_in_CMakeLists.patch
 %patch2 -p0 -b .gnuradio-3.5.1-linkage.patch
 
 %build
@@ -950,25 +970,21 @@ for i in 32 48 64 128 256; do
 		%{buildroot}/%{_iconsdir}/hicolor/${i}x${i}/apps/gnuradio-grc.png
 done
 
-############################
 # Desktop files
 mkdir -p %{buildroot}%{_datadir}/applications
 mkdir -p %{buildroot}%{_datadir}/mime/application
 mv %{buildroot}%{_datadir}/%{name}/grc/freedesktop/gnuradio-grc.xml %{buildroot}%{_datadir}/mime/application/
-mkdir -p %{buildroot}%{_sysconfdir}
-mv -f %{buildroot}%{_prefix}/etc/*  %{buildroot}%{_sysconfdir}
-
 
 cat > gnuradio-doc.desktop << EOF
 [Desktop Entry]
 Version=1.0
 Name=Gnu Radio C++ API Documentation
 GenericName=Gnu Radio C++ API Documentation
-Exec=xdg-open /usr/share/doc/gnuradio-3.5.1/html/index.html
+Exec=xdg-open /usr/share/doc/%{name}-%{version}/html/index.html
 Icon=gnuradio-grc
 Terminal=false
 Type=Application
-Categories=System;Documentation;X-Mandriva-CrossDesktop;
+Categories=System;Documentation;X-Mageia-CrossDesktop;
 X-Desktop-File-Install-Version=0.19
 EOF
 
@@ -976,7 +992,7 @@ desktop-file-install \
 --dir=%{buildroot}%{_datadir}/applications %{name}-doc.desktop
 
 desktop-file-install \
---add-category='X-Mandriva-CrossDesktop' \
+--add-category='X-Mageia-CrossDesktop' \
 --set-key=Name \
 --set-value='Gnu Radio Companion' \
 --dir=%{buildroot}%{_datadir}/applications %{buildroot}%{_datadir}/%{name}/grc/freedesktop/%{name}-grc.desktop
@@ -988,4 +1004,3 @@ find %{buildroot} -name "*.la" -exec rm -rf {} \;
 rm -rf %{buildroot}%{_bindir}/create-gnuradio-out-of-tree-project
 rm -rf %{buildroot}%{_libdir}/%{name}/grc_setup_freedesktop
 rm -rf %{buildroot}/%{_datadir}/%{name}/grc/freedesktop	
-
