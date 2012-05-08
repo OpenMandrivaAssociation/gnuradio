@@ -135,7 +135,7 @@ This package contains the documentation for the GNU Radio software
 defined radio system.
 
 %files doc
-%doc ChangeLog NEWS AUTHORS
+%doc ChangeLog AUTHORS
 %doc %{_docdir}/*
 %{_datadir}/applications/%{name}-doc.desktop
 
