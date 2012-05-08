@@ -27,6 +27,8 @@
 %define devgruel	%mklibname gruel -d
 %define libfcd		%mklibname %{name}-fcd %{major}
 %define devfcd		%mklibname %{name}-fcd -d
+%define libwave		%mklibname %{name}-fcd %{major}
+%define devwave		%mklibname %{name}-wavelet -d
 
 Name:		gnuradio
 Version:	3.6.0
@@ -184,13 +186,14 @@ Group:		Development/Other
 Requires:	%{libuhd} = %{version}-%{release}
 Obsoletes:	%{_lib}gnuradio-usrp2-devel < 3.5.1
 Obsoletes:	%{_lib}gnuradio-usrp-devel < 3.5.1
+Requires:	%{devcore} = %{version}-%{release}
 
 
 %description -n %{devuhd}
 This package contains header files needed by developers.
 
 %files -n %{devuhd}
-%{_includedir}/%{name}/gr_uhd_*.h
+# %{_includedir}/%{name}/gr_uhd_*.h
 %{_libdir}/pkgconfig/%{name}-uhd.pc
 %{_libdir}/lib%{name}-uhd*.so
 
@@ -318,12 +321,13 @@ Requires:	%{libaudio} = %{version}-%{release}
 Obsoletes:	%{_lib}gnuradio-audio-alsa-devel < 3.5.1
 Obsoletes:	%{_lib}gnuradio-audio-jack-devel < 3.5.1
 Obsoletes:	%{_lib}gnuradio-audio-portaudio-devel < 3.5.1
+Requires:	%{devcore} = %{version}-%{release}
 
 %description -n %{devaudio}
 This package contains header files needed by developers.
 
 %files -n %{devaudio}
-%{_includedir}/%{name}/gr_audio_*.h
+#% {_includedir}/%{name}/gr_audio_*.h
 %{_libdir}/pkgconfig/%{name}-audio.pc
 %{_libdir}/lib%{name}-audio*.so
 
@@ -447,6 +451,53 @@ This package contains header files needed by developers.
 %{_includedir}/%{name}/noaa_*.h
 %{_libdir}/lib%{name}-noaa*.so
 %{_libdir}/pkgconfig/%{name}-noaa.pc
+
+
+
+
+
+
+
+####################
+#libwave
+
+%package -n %{libwave}
+Summary:	GNU Radio C++ block implementing the NOAA
+Group:		System/Libraries
+
+%description -n %{libwave}
+This package provides a NOAA POES HRPT receiver/demodulator block
+for GNU Radio.
+ 
+%files -n %{libwave}
+%{_libdir}/lib%{name}-wavelet*.so.%{major}*
+
+
+############################
+%package -n %{devwave}
+Summary:	GNU Radio C++ block implementing the NOAA
+Group:		Development/Other
+Requires:	%{libwave} = %{version}-%{release}
+
+%description -n %{devwave}
+This package contains header files needed by developers.
+
+%files -n %{devwave}
+%{_includedir}/%{name}/wavelet_*
+%{_libdir}/lib%{name}-wavelet.so
+%{_libdir}/pkgconfig/%{name}-wavelet.pc
+
+%package -n python-%{name}-wavelet
+Summary:	Python bindings for GNU Radio wavelet
+Group:		Development/Python
+Requires:	python-%{name}-core = %{version}-%{release}
+
+%description -n python-%{name}-wavelet
+This package contains Python bindings for GNU Radio wavelet.
+
+%files -n python-%{name}-wavelet
+%{python_sitearch}/wavelet/*
+
 
 ############################
 #libgnuradio-pager0
@@ -810,7 +861,7 @@ and daughterboard drivers.
 
 %files -n python-%{name}-uhd
 %{python_sitearch}/%{name}/uhd
-%{_bindir}/uhd_*.py
+%{_bindir}/uhd_*
 
 
 ############################
@@ -896,11 +947,11 @@ Requires:	python-%{name}-core = %{version}-%{release}
 This package provides and implements an NOAA POES HRPT receiver.
 
 %files noaa
-%{_bindir}/usrp_rx_hrpt.py
-%{_bindir}/file_rx_hrpt.py
-%{_bindir}/hrpt_decode.py
-%{_bindir}/hrpt_demod.py
-%{_bindir}/usrp_rx_hrpt_nogui.py
+#%{_bindir}/usrp_rx_hrpt.py
+#%{_bindir}/file_rx_hrpt.py
+#%{_bindir}/hrpt_decode.py
+#%{_bindir}/hrpt_demod.py
+#%{_bindir}/usrp_rx_hrpt_nogui.py
 %{python_sitearch}/%{name}/noaa
 
 
@@ -932,8 +983,8 @@ Requires:	python-qwt
 This package provides commonly used utilities for GNU Radio.
 
 %files utils
-%{_bindir}/gr_filter_design.py
-%{_bindir}/gr_plot_*.py
+%{_bindir}/gr_filter_design
+%{_bindir}/gr_plot*
 %{python_sitearch}/%{name}/plot_data.*
 %{python_sitearch}/%{name}/pyqt_filter.*
 %{python_sitearch}/%{name}/pyqt_plot.*
