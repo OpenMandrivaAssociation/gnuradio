@@ -27,7 +27,7 @@
 %define devgruel	%mklibname gruel -d
 %define libfcd		%mklibname %{name}-fcd %{major}
 %define devfcd		%mklibname %{name}-fcd -d
-%define libwave		%mklibname %{name}-fcd %{major}
+%define libwave		%mklibname %{name}-wavelet %{major}
 %define devwave		%mklibname %{name}-wavelet -d
 
 Name:		gnuradio
