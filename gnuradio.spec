@@ -484,6 +484,7 @@ This package contains header files needed by developers.
 
 %files -n %{devwave}
 %{_includedir}/%{name}/wavelet_*
+%{_libdir}/lib%{name}-wavelet-%{version}.so
 %{_libdir}/lib%{name}-wavelet.so
 %{_libdir}/pkgconfig/%{name}-wavelet.pc
 
@@ -496,7 +497,7 @@ Requires:	python-%{name}-core = %{version}-%{release}
 This package contains Python bindings for GNU Radio wavelet.
 
 %files -n python-%{name}-wavelet
-%{python_sitearch}/wavelet/*
+%{python_sitearch}/gnuradio/wavelet/*
 
 
 ############################
@@ -986,6 +987,8 @@ This package provides commonly used utilities for GNU Radio.
 %{_bindir}/gr_filter_design
 %{_bindir}/gr_plot*
 %{python_sitearch}/%{name}/plot_data.*
+%{python_sitearch}/%{name}/plot_fft*.py*
+%{python_sitearch}/%{name}/plot_psd*.py*
 %{python_sitearch}/%{name}/pyqt_filter.*
 %{python_sitearch}/%{name}/pyqt_plot.*
 %{_bindir}/gnuradio-config-info
