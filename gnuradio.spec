@@ -52,6 +52,7 @@ BuildRequires:	fftw-devel
 BuildRequires:	cppunit-devel
 BuildRequires:	wxPython
 BuildRequires:	xmlto
+BuildRequires:	texlive-graphics
 BuildRequires:	graphviz
 BuildRequires:	boost-devel
 BuildRequires:	python-devel
