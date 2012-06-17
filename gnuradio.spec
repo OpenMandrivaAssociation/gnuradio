@@ -31,7 +31,7 @@
 %define devwave		%mklibname %{name}-wavelet -d
 
 Name:		gnuradio
-Version:	3.6.0
+Version:	3.6.1
 Release:	1
 Summary:	Software defined radio framework
 Group:		Development/Other 
@@ -44,7 +44,7 @@ Source0:	%{name}-%{version}.tar.gz
 # Unlike the release tarballs the created tarball will be Cmake enabled.
 Source1:	make-tarball
 Patch0:		gnuradio-3.5.1-mga-fix_install_paths_in_CMakeLists.patch
-Patch2:		gnuradio-3.5.1-fix-linkage.patch
+Patch2:		gnuradio-3.6.1-fix-linkage.patch
 
 BuildRequires:	cmake
 BuildRequires:	sdcc
@@ -1002,7 +1002,7 @@ This package provides commonly used utilities for GNU Radio.
 %prep
 %setup -q -n %{name}-%{version}
 %patch0 -p0 -b .gnuradio-3.5.1-mga-fix_install_paths_in_CMakeLists.patch
-%patch2 -p0 -b .gnuradio-3.5.1-linkage.patch
+%patch2 -p1 -b .gnuradio-3.6.1-linkage.patch
 
 %build
 %cmake
@@ -1038,7 +1038,7 @@ Exec=xdg-open /usr/share/doc/%{name}-%{version}/html/index.html
 Icon=gnuradio-grc
 Terminal=false
 Type=Application
-Categories=System;Documentation;X-Mageia-CrossDesktop;
+Categories=System;Documentation;X-Mandriva-Desktop;
 X-Desktop-File-Install-Version=0.19
 EOF
 
@@ -1046,7 +1046,7 @@ desktop-file-install \
 --dir=%{buildroot}%{_datadir}/applications %{name}-doc.desktop
 
 desktop-file-install \
---add-category='X-Mageia-CrossDesktop' \
+--add-category='X-Mandriva-Desktop' \
 --set-key=Name \
 --set-value='Gnu Radio Companion' \
 --dir=%{buildroot}%{_datadir}/applications %{buildroot}%{_datadir}/%{name}/grc/freedesktop/%{name}-grc.desktop
