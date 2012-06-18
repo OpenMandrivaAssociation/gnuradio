@@ -29,6 +29,8 @@
 %define devfcd		%mklibname %{name}-fcd -d
 %define libwave		%mklibname %{name}-wavelet %{major}
 %define devwave		%mklibname %{name}-wavelet -d
+%define devfft		%mklibname fft -d
+%define libfft		%mklibname fft
 
 Name:		gnuradio
 Version:	3.6.1
@@ -197,6 +199,50 @@ This package contains header files needed by developers.
 # %{_includedir}/%{name}/gr_uhd_*.h
 %{_libdir}/pkgconfig/%{name}-uhd.pc
 %{_libdir}/lib%{name}-uhd*.so
+
+
+########################################
+
+%package -n %{libfft}
+Summary:	fft package for %{name}
+Group:		System/Libraries
+Provides:	%{name}-fft
+
+%description -n %{libfft}
+This is the GNU Radio FFT package. 
+
+%files -n %{libfft}
+%{_libdir}/lib%{name}-fft*.so.%{major}*
+
+
+
+%package -n %{devfft}
+Summary:	FFT devel files
+Group:		Development/Other
+Requires:	%{libfft} = %{version}-%{release}
+Requires:	%{devcore} = %{version}-%{release}
+
+
+%description -n %{devfft}
+This package contains header files ans libs needed for
+developers.
+
+%files -n %{devfft}
+%{_includedir}/%{name}/fft/*.h
+%{_libdir}/pkgconfig/%{name}-fft.pc
+%{_libdir}/lib%{name}-fft*.so
+
+
+%package -n python-%{name}-fft
+Summary:	Python bindings for GNU Radio FFT
+Group:		Development/Python
+Requires:	python-%{name}-core = %{version}-%{release}
+
+%description -n python-%{name}-fft
+This package contains Python bindings for GNU Radio wavelet.
+
+%files -n python-%{name}-fft
+%{python_sitearch}/gnuradio/fft/*
 
 
 ############################
@@ -452,12 +498,6 @@ This package contains header files needed by developers.
 %{_includedir}/%{name}/noaa_*.h
 %{_libdir}/lib%{name}-noaa*.so
 %{_libdir}/pkgconfig/%{name}-noaa.pc
-
-
-
-
-
-
 
 ####################
 #libwave
