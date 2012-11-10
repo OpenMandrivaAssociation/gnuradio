@@ -1,0 +1,38 @@
+diff --git a/gr-qtgui/lib/CMakeLists.txt b/gr-qtgui/lib/CMakeLists.txt
+index 2dc35e8..929309f 100644
+--- a/gr-qtgui/lib/CMakeLists.txt
++++ b/gr-qtgui/lib/CMakeLists.txt
+@@ -87,7 +87,7 @@ list(APPEND qtgui_libs
+ 
+ add_definitions(-DQWT_DLL) #setup QWT library linkage
+ add_library(gnuradio-qtgui SHARED ${qtgui_srcs})
+-target_link_libraries(gnuradio-qtgui ${qtgui_libs})
++target_link_libraries(gnuradio-qtgui ${qtgui_libs} rt)
+ GR_LIBRARY_FOO(gnuradio-qtgui RUNTIME_COMPONENT "qtgui_runtime" DEVEL_COMPONENT "qtgui_devel")
+ 
+ ########################################################################
+diff --git a/gruel/src/lib/CMakeLists.txt b/gruel/src/lib/CMakeLists.txt
+index e771353..70b70f6 100644
+--- a/gruel/src/lib/CMakeLists.txt
++++ b/gruel/src/lib/CMakeLists.txt
+@@ -87,7 +87,7 @@ if(HAVE_PTHREAD_SETSCHEDPARAM)
+ endif()
+ 
+ add_library(gruel SHARED ${gruel_sources})
+-target_link_libraries(gruel ${gruel_libs})
++target_link_libraries(gruel ${Boost_LIBRARIES} pthread)
+ GR_LIBRARY_FOO(gruel RUNTIME_COMPONENT "gruel_runtime" DEVEL_COMPONENT "gruel_devel")
+ 
+ ########################################################################
+diff --git a/volk/lib/CMakeLists.txt b/volk/lib/CMakeLists.txt
+index 8288786..1d57e3e 100644
+--- a/volk/lib/CMakeLists.txt
++++ b/volk/lib/CMakeLists.txt
+@@ -294,6 +294,7 @@ endif()
+ 
+ #create the volk runtime library
+ add_library(volk SHARED ${volk_sources})
++target_link_libraries(volk m)
+ target_link_libraries(volk ${volk_libraries})
+ set_target_properties(volk PROPERTIES SOVERSION ${LIBVER})
+ set_target_properties(volk PROPERTIES DEFINE_SYMBOL "volk_EXPORTS")
