@@ -27,46 +27,46 @@
 %define devgruel	%mklibname gruel -d
 %define libfcd		%mklibname %{name}-fcd %{major}
 %define devfcd		%mklibname %{name}-fcd -d
-%define libwave		%mklibname %{name}-wavelet %{major}
-%define devwave		%mklibname %{name}-wavelet -d
-%define devfft		%mklibname fft -d
-%define libfft		%mklibname fft
+%define libwavelet	%mklibname %{name}-wavelet %{major}
+%define devwavelet	%mklibname %{name}-wavelet -d
+%define libfft		%mklibname %{name}-fft %{major}
+%define devfft		%mklibname %{name}-fft -d
+%define libfilter	%mklibname %{name}-filter %{major}
+%define devfilter	%mklibname %{name}-filter -d
 
 Name:		gnuradio
-Version:	3.6.1
-Release:	1
+Version:	3.6.2
+Release:	%mkrel 4
 Summary:	Software defined radio framework
-Group:		Development/Other 
+Group:		Communications
 License:	GPLv3+
 URL:		http://www.gnuradio.org
 Source0:	%{name}-%{version}.tar.gz
 # Create tarball from git with:
 # $ ./make-tarball gnuradio http://gnuradio.org/git/gnuradio.git
 # See note in make-tarball script
-# Unlike the release tarballs the created tarball will be Cmake enabled.
 Source1:	make-tarball
-Patch0:		gnuradio-3.5.1-mga-fix_install_paths_in_CMakeLists.patch
+Patch0:		gnuradio-3.6.2-mga-fix_install_paths_in_CMakeLists.patch
 Patch2:		gnuradio-3.6.1-fix-linkage.patch
 
 BuildRequires:	cmake
 BuildRequires:	sdcc
-BuildRequires:	fftw-devel
+BuildRequires:	pkgconfig(fftw3)
 BuildRequires:	cppunit-devel
 BuildRequires:	wxPython
 BuildRequires:	xmlto
-BuildRequires:	texlive-graphics
 BuildRequires:	graphviz
 BuildRequires:	boost-devel
-BuildRequires:	python-devel
+BuildRequires:	pkgconfig(python)
 BuildRequires:	swig
 BuildRequires:	doxygen
-BuildRequires:	libusb-devel
+BuildRequires:	pkgconfig(libusb-1.0)
 BuildRequires:	pkgconfig(alsa)
 BuildRequires:	pkgconfig(sdl)
 BuildRequires:	pkgconfig(guile-2.0)
 BuildRequires:	portaudio-devel
 BuildRequires:	libtool
-BuildRequires:	gsl-devel
+BuildRequires:	pkgconfig(gsl)
 BuildRequires:	python-qt4-devel
 #BuildRequires:	python-qwt
 BuildRequires:	libqwtplot3d-devel
@@ -77,18 +77,19 @@ BuildRequires:	pygtk2.0-libglade
 BuildRequires:	liborc-devel
 BuildRequires:	uhd-devel
 BuildRequires:	python-numpy
-BuildRequires:	libcanberra-gtk-devel
-BuildRequires:	%{_lib}qwt-devel
-BuildRequires:	desktop-file-utils
+BuildRequires:	pkgconfig(libcanberra-gtk)
+BuildRequires:	qwt-devel
+## TODO
+#BuildRequires:	sphinx
 
 Requires(pre):	shadow-utils
 
-Requires:	gnuradio-companion
-Requires:	gnuradio-doc
-Requires:	gnuradio-examples
-Requires:	gnuradio-noaa
-Requires:	gnuradio-pager
-Requires:	gnuradio-utils
+Requires:	%{name}-companion
+Requires:	%{name}-doc
+Requires:	%{name}-examples
+Requires:	%{name}-noaa
+Requires:	%{name}-pager
+Requires:	%{name}-utils
 Requires:	%{libatsc}
 Requires:	%{libcore}
 Requires:	%{libnoaa}
@@ -103,18 +104,25 @@ Requires:	%{libaudio}
 Requires:	%{libvocoder}
 Requires:	%{libgruel}
 Requires:	%{libfcd}
-Requires:	python-gnuradio-atsc
-Requires:	python-gnuradio-core
-Requires:	python-gnuradio-qtgui
-Requires:	python-gnuradio-trellis
-Requires:	python-gnuradio-video-sdl
-Requires:	python-gnuradio-wxgui
-Requires:	python-gnuradio-digital
-Requires:	python-gnuradio-gruel
-Requires:	python-gnuradio-vocoder
-Requires:	python-gnuradio-audio
-Requires:	python-gnuradio-uhd
-Requires:	python-gnuradio-fcd
+Requires:	%{libwavelet}
+Requires:	%{libfft}
+Requires:	%{libfilter}
+
+Requires:	python-%{name}-atsc
+Requires:	python-%{name}-core
+Requires:	python-%{name}-qtgui
+Requires:	python-%{name}-trellis
+Requires:	python-%{name}-video-sdl
+Requires:	python-%{name}-wxgui
+Requires:	python-%{name}-digital
+Requires:	python-%{name}-gruel
+Requires:	python-%{name}-vocoder
+Requires:	python-%{name}-audio
+Requires:	python-%{name}-uhd
+Requires:	python-%{name}-fcd
+Requires:	python-%{name}-wavelet
+Requires:	python-%{name}-fft
+Requires:	python-%{name}-filter
 
 Obsoletes:	%{name} < %{version}-%{release}
 Provides:	%{name} = %{version}-%{release}
@@ -132,7 +140,7 @@ This is a virtual package that installs the entire GNU Radio software set.
 ############################
 %package doc
 Summary:	Software Defined Radio
-Group:		Development/Other
+Group:		Communications
 BuildArch:	noarch
 
 %description doc
@@ -147,8 +155,7 @@ defined radio system.
 ############################
 %package examples
 Summary:	GNU Radio Example Programs
-Group:		Development/Other
-BuildArch:	noarch
+Group:		Communications
 
 %description examples
 This package provides examples of GNU Radio usage using Python.
@@ -169,80 +176,34 @@ This package provides examples of GNU Radio usage using Python.
 %package -n %{libuhd}
 Summary:	uhd
 Group:		System/Libraries
-Obsoletes:	%{_lib}gnuradio-usrp0 < 3.5.1
-Obsoletes:	%{_lib}gnuradio-usrp2_0 < 3.5.1
+Obsoletes:	%{_lib}%{name}-usrp0 < 3.5.1
+Obsoletes:	%{_lib}%{name}-usrp2_0 < 3.5.1
 Obsoletes:	usrp < 3.5.1
 
 %description -n %{libuhd}
-This is the GNU Radio UHD package. 
+This is the GNU Radio UHD package.
 It is the interface to the UHD library to connect to and send and receive data
 between the Ettus Research, LLC product line.
 
 %files -n %{libuhd}
 %{_libdir}/lib%{name}-uhd*.so.%{major}*
 
-
 ############################
 %package -n %{devuhd}
 Summary:	Uhd devel files
-Group:		Development/Other
+Group:		Communications
 Requires:	%{libuhd} = %{version}-%{release}
-Obsoletes:	%{_lib}gnuradio-usrp2-devel < 3.5.1
-Obsoletes:	%{_lib}gnuradio-usrp-devel < 3.5.1
+Obsoletes:	%{_lib}%{name}-usrp2-devel < 3.5.1
+Obsoletes:	%{_lib}%{name}-usrp-devel < 3.5.1
 Requires:	%{devcore} = %{version}-%{release}
-
 
 %description -n %{devuhd}
 This package contains header files needed by developers.
 
 %files -n %{devuhd}
-# %{_includedir}/%{name}/gr_uhd_*.h
+#% {_includedir}/%{name}/gr_uhd_*.h
 %{_libdir}/pkgconfig/%{name}-uhd.pc
 %{_libdir}/lib%{name}-uhd*.so
-
-
-########################################
-
-%package -n %{libfft}
-Summary:	fft package for %{name}
-Group:		System/Libraries
-Provides:	%{name}-fft
-
-%description -n %{libfft}
-This is the GNU Radio FFT package. 
-
-%files -n %{libfft}
-%{_libdir}/lib%{name}-fft*.so.%{major}*
-
-
-
-%package -n %{devfft}
-Summary:	FFT devel files
-Group:		Development/Other
-Requires:	%{libfft} = %{version}-%{release}
-Requires:	%{devcore} = %{version}-%{release}
-
-
-%description -n %{devfft}
-This package contains header files ans libs needed for
-developers.
-
-%files -n %{devfft}
-%{_includedir}/%{name}/fft/*.h
-%{_libdir}/pkgconfig/%{name}-fft.pc
-%{_libdir}/lib%{name}-fft*.so
-
-
-%package -n python-%{name}-fft
-Summary:	Python bindings for GNU Radio FFT
-Group:		Development/Python
-Requires:	python-%{name}-core = %{version}-%{release}
-
-%description -n python-%{name}-fft
-This package contains Python bindings for GNU Radio wavelet.
-
-%files -n python-%{name}-fft
-%{python_sitearch}/gnuradio/fft/*
 
 
 ############################
@@ -253,7 +214,7 @@ Summary:	GNU Radio digital modulation blocks
 Group:		System/Libraries
 
 %description -n %{libdigital}
-This is the gr-digital package. 
+This is the gr-digital package.
 It contains all of the digital modulation blocks, utilities, and examples.
 
 %files -n %{libdigital}
@@ -263,7 +224,7 @@ It contains all of the digital modulation blocks, utilities, and examples.
 ############################
 %package -n %{devdigital}
 Summary:	digital
-Group:		Development/Other
+Group:		Communications
 Requires:	%{libdigital} = %{version}-%{release}
 
 %description -n %{devdigital}
@@ -283,8 +244,8 @@ Summary:	GNU Radio Volk
 Group:		System/Libraries
 
 %description -n %{libvolk}
-VOLK stands for Vector-Optimized Library of Kernels. 
-It is a library that was introduced into GNU Radio in December 2010. 
+VOLK stands for Vector-Optimized Library of Kernels.
+It is a library that was introduced into GNU Radio in December 2010.
 
 %files -n %{libvolk}
 %{_libdir}/libvolk.so.%{major}*
@@ -295,7 +256,7 @@ It is a library that was introduced into GNU Radio in December 2010.
 ############################
 %package -n %{devvolk}
 Summary:	GNU Radio Volk devel files
-Group:		Development/Other
+Group:		Communications
 Requires:	%{libvolk} = %{version}-%{release}
 
 %description -n %{devvolk}
@@ -316,6 +277,8 @@ Group:		System/Libraries
 
 %description -n %{libatsc}
 This pacage provides ATSC (HDTV) transmitter and receiver blocks.
+Code related to the Advanced Television Standards Committee HDTV
+implementation.
 
 %files -n %{libatsc}
 %{_libdir}/lib%{name}-atsc*.so.%{major}*
@@ -324,7 +287,7 @@ This pacage provides ATSC (HDTV) transmitter and receiver blocks.
 ############################
 %package -n %{devatsc}
 Summary:	The GNU Radio blocks for ATSC decoding
-Group:		Development/Other
+Group:		Communications
 Requires:	%{libatsc} = %{version}-%{release}
 
 %description -n %{devatsc}
@@ -345,11 +308,10 @@ This package contains header files needed by developers.
 %package -n %{libaudio}
 Summary:	GNU Radio audio interfaces
 Group:		System/Libraries
-Requires:	libportaudio2
-Obsoletes:	gnuradio-sounder < 3.5.1
-Obsoletes:	%{_lib}gnuradio-audio-alsa0 < 3.5.1
-Obsoletes:	%{_lib}gnuradio-audio-jack0 < 3.5.1
-Obsoletes:	%{_lib}gnuradio-audio-portaudio0 < 3.5.1
+Obsoletes:	%{name}-sounder < 3.5.1
+Obsoletes:	%{_lib}%{name}-audio-alsa0 < 3.5.1
+Obsoletes:	%{_lib}%{name}-audio-jack0 < 3.5.1
+Obsoletes:	%{_lib}%{name}-audio-portaudio0 < 3.5.1
 
 
 %description -n %{libaudio}
@@ -363,11 +325,11 @@ This package includes all of the supported audio interfaces.
 ############################
 %package -n %{devaudio}
 Summary:	GNU Radio audio interfaces - devel files
-Group:		Development/Other
+Group:		Communications
 Requires:	%{libaudio} = %{version}-%{release}
-Obsoletes:	%{_lib}gnuradio-audio-alsa-devel < 3.5.1
-Obsoletes:	%{_lib}gnuradio-audio-jack-devel < 3.5.1
-Obsoletes:	%{_lib}gnuradio-audio-portaudio-devel < 3.5.1
+Obsoletes:	%{_lib}%{name}-audio-alsa-devel < 3.5.1
+Obsoletes:	%{_lib}%{name}-audio-jack-devel < 3.5.1
+Obsoletes:	%{_lib}%{name}-audio-portaudio-devel < 3.5.1
 Requires:	%{devcore} = %{version}-%{release}
 
 %description -n %{devaudio}
@@ -385,11 +347,11 @@ This package contains header files needed by developers.
 %package -n %{libcore}
 Summary:	The GNU Radio Core Library
 Group:		System/Libraries
-# Obsoletes with no new corresponding package added here 
-Obsoletes:	gnuradio-gpio < 3.5.1
-Obsoletes:	gnuradio-radar-mono < 3.5.1
-Obsoletes:	gnuradio-radio-astronomy < 3.5.1
-Obsoletes:	%{_lib}gnuradio-msdd6000_0 < 3.5.1
+# Obsoletes with no new corresponding package added here
+Obsoletes:	%{name}-gpio < 3.5.1
+Obsoletes:	%{name}-radar-mono < 3.5.1
+Obsoletes:	%{name}-radio-astronomy < 3.5.1
+Obsoletes:	%{_lib}%{name}-msdd6000_0 < 3.5.1
 
 %description -n %{libcore}
 This package contains the core GNU Radio libraries.
@@ -401,12 +363,14 @@ This package contains the core GNU Radio libraries.
 ############################
 %package -n %{devcore}
 Summary:	The GNU Radio Core devel files
-Group:		Development/Other
+Group:		Communications
 Requires:	%{libcore} = %{version}-%{release}
-Provides:	%{name}-devel = %{version}-%{release}
-Obsoletes:	%{name}-devel < %{version}-%{release}
-# Obsoletes (devel) with no new corresponding package added here 
-Obsoletes:	%{_lib}gnuradio-msdd6000-devel  < 3.5.1
+Provides:	%{devcore} = %{version}-%{release}
+Obsoletes:	%{devcore} < %{version}-%{release}
+
+# Obsoletes (devel) with no new corresponding package added here
+Obsoletes:	%{_lib}%{name}-msdd6000-devel  < 3.5.1
+
 
 %description -n %{devcore}
 This package contains header files needed by developers.
@@ -415,12 +379,11 @@ This package contains header files needed by developers.
 %dir %{_includedir}/%{name}
 %{_includedir}/%{name}/gr_*.h
 %{_includedir}/%{name}/gri_*.h
-
 %{_includedir}/%{name}/ccomplex_*.h
 %{_includedir}/%{name}/complex_*.h
 %{_includedir}/%{name}/fcomplex*.h
 %{_includedir}/%{name}/float_dotprod*.h
-%{_includedir}/%{name}/gnuradio_swig_bug_workaround.h
+%{_includedir}/%{name}/%{name}_swig_bug_workaround.h
 %{_includedir}/%{name}/i2c*.h
 %{_includedir}/%{name}/malloc16.h
 %{_includedir}/%{name}/microtune_*.h
@@ -442,8 +405,8 @@ This package contains header files needed by developers.
 %package -n %{libvocoder}
 Summary:	GNU Radio C++ vocoder blocks
 Group:		System/Libraries
-Obsoletes:	%{_lib}gnuradio-cvsd-vocoder0 < 3.5.1
-Obsoletes:	%{_lib}gnuradio-gsm-fr-vocoder0 < 3.5.1
+Obsoletes:	%{_lib}%{name}-cvsd-vocoder0 < 3.5.1
+Obsoletes:	%{_lib}%{name}-gsm-fr-vocoder0 < 3.5.1
 
 %description -n %{libvocoder}
 This is the gr-vocoder package.
@@ -456,10 +419,10 @@ It contains all available vocoders in GNU Radio.
 ############################
 %package -n %{devvocoder}
 Summary:	GNU Radio vocoder devel files
-Group:		Development/Other
+Group:		Communications
 Requires:	%{libvocoder} = %{version}-%{release}
-Obsoletes:	%{_lib}gnuradio-cvsd-vocoder-devel < 3.5.1
-Obsoletes:	%{_lib}gnuradio-gsm-fr-vocoder-devel < 3.5.1
+Obsoletes:	%{_lib}%{name}-cvsd-vocoder-devel < 3.5.1
+Obsoletes:	%{_lib}%{name}-gsm-fr-vocoder-devel < 3.5.1
 
 %description -n %{devvocoder}
 This package contains header files needed by developers.
@@ -480,7 +443,7 @@ Group:		System/Libraries
 %description -n %{libnoaa}
 This package provides a NOAA POES HRPT receiver/demodulator block
 for GNU Radio.
- 
+
 %files -n %{libnoaa}
 %{_libdir}/lib%{name}-noaa*.so.%{major}*
 
@@ -488,7 +451,7 @@ for GNU Radio.
 ############################
 %package -n %{devnoaa}
 Summary:	GNU Radio C++ block implementing the NOAA
-Group:		Development/Other
+Group:		Communications
 Requires:	%{libnoaa} = %{version}-%{release}
 
 %description -n %{devnoaa}
@@ -498,48 +461,6 @@ This package contains header files needed by developers.
 %{_includedir}/%{name}/noaa_*.h
 %{_libdir}/lib%{name}-noaa*.so
 %{_libdir}/pkgconfig/%{name}-noaa.pc
-
-####################
-#libwave
-
-%package -n %{libwave}
-Summary:	GNU Radio C++ block implementing the NOAA
-Group:		System/Libraries
-
-%description -n %{libwave}
-This package provides a NOAA POES HRPT receiver/demodulator block
-for GNU Radio.
- 
-%files -n %{libwave}
-%{_libdir}/lib%{name}-wavelet*.so.%{major}*
-
-
-############################
-%package -n %{devwave}
-Summary:	GNU Radio C++ block implementing the NOAA
-Group:		Development/Other
-Requires:	%{libwave} = %{version}-%{release}
-
-%description -n %{devwave}
-This package contains header files needed by developers.
-
-%files -n %{devwave}
-%{_includedir}/%{name}/wavelet_*
-%{_libdir}/lib%{name}-wavelet-%{version}.so
-%{_libdir}/lib%{name}-wavelet.so
-%{_libdir}/pkgconfig/%{name}-wavelet.pc
-
-%package -n python-%{name}-wavelet
-Summary:	Python bindings for GNU Radio wavelet
-Group:		Development/Python
-Requires:	python-%{name}-core = %{version}-%{release}
-
-%description -n python-%{name}-wavelet
-This package contains Python bindings for GNU Radio wavelet.
-
-%files -n python-%{name}-wavelet
-%{python_sitearch}/gnuradio/wavelet/*
-
 
 ############################
 #libgnuradio-pager0
@@ -559,7 +480,7 @@ for GNU Radio.
 ############################
 %package -n %{devpager}
 Summary:	GNU Radio C++ block implementing the FLEX one-way pager protocol
-Group:		Development/Other
+Group:		Communications
 Requires:	%{libpager} = %{version}-%{release}
 
 %description -n %{devpager}
@@ -589,7 +510,7 @@ QT-based GUI applications.
 ############################
 %package -n %{devqtgui}
 Summary:	GNU Radio C++ blocks for QT-based GUI applications
-Group:		Development/Other
+Group:		Communications
 Requires:	%{libqtgui} = %{version}-%{release}
 
 %description -n %{devqtgui}
@@ -630,7 +551,7 @@ for GNU Radio.
 ############################
 %package -n %{devtrellis}
 Summary:	GNU Radio C++ block implementing trellis-coded modulation
-Group:		Development/Other
+Group:		Communications
 Requires:	%{libtrellis} = %{version}-%{release}
 
 %description -n %{devtrellis}
@@ -666,7 +587,7 @@ for GNU Radio.
 ############################
 %package -n %{devvideo_sdl}
 Summary:	GNU Radio C++ block implementing video-sdl-coded modulation
-Group:		Development/Other
+Group:		Communications
 Requires:	%{libvideo_sdl} = %{version}-%{release}
 
 %description -n %{devvideo_sdl}
@@ -699,7 +620,7 @@ GNU Radio.
 ############################
 %package -n %{devgruel}
 Summary:	GNU Radio Utility Etcetera Library
-Group:		Development/Other
+Group:		Communications
 Requires:	%{libgruel} = %{version}-%{release}
 
 %description -n %{devgruel}
@@ -742,6 +663,83 @@ This package contains header files needed by developers.
 %{_libdir}/pkgconfig/%{name}-fcd.pc
 %{_libdir}/lib%{name}-fcd*.so
 
+## TODO Fix Summary/Description
+############################
+%package -n %{libwavelet}
+Summary:	GnuRadio Wavelet
+Group:		System/Libraries
+
+%description -n %{libwavelet}
+GnuRadio Wavelet module.
+
+%files -n %{libwavelet}
+%{_libdir}/lib%{name}-wavelet*.so.%{major}*
+
+############################
+%package -n %{devwavelet}
+Summary:	GnuRadio Wavelet development files
+Group:		System/Libraries
+Requires:	%{libwavelet} = %{version}-%{release}
+
+%description -n %{devwavelet}
+This package contains header files needed by developers.
+
+%files -n %{devwavelet}
+%{_includedir}/%{name}/wavelet_*.h
+%{_libdir}/lib%{name}-wavelet*.so
+%{_libdir}/pkgconfig/%{name}-wavelet.pc
+
+
+############################
+%package -n %{libfft}
+Summary:	GnuRadio fft
+Group:		System/Libraries
+
+%description -n %{libfft}
+GnuRadio fft module.
+
+%files -n %{libfft}
+%{_libdir}/lib%{name}-fft*.so.%{major}*
+
+############################
+%package -n %{devfft}
+Summary:	GnuRadio fft development files
+Group:		System/Libraries
+Requires:	%{libfft} = %{version}-%{release}
+
+%description -n %{devfft}
+This package contains header files needed by developers.
+
+%files -n %{devfft}
+%{_includedir}/%{name}/fft/*.h
+%{_libdir}/lib%{name}-fft*.so
+%{_libdir}/pkgconfig/%{name}-fft.pc
+
+############################
+%package -n %{libfilter}
+Summary:	GnuRadio filters
+Group:		System/Libraries
+
+%description -n %{libfilter}
+GnuRadio filter module.
+
+%files -n %{libfilter}
+%{_libdir}/lib%{name}-filter*.so.%{major}*
+
+############################
+%package -n %{devfilter}
+Summary:	GnuRadio filter development files
+Group:		System/Libraries
+Requires:	%{libfilter} = %{version}-%{release}
+
+%description -n %{devfilter}
+This package contains header files needed by developers.
+
+%files -n %{devfilter}
+%{_includedir}/%{name}/filter/*.h
+%{_libdir}/lib%{name}-filter*.so
+%{_libdir}/pkgconfig/%{name}-filter.pc
+
 ############################
 ############################
 #
@@ -781,8 +779,8 @@ This package contains Python bindings for GNU Radio gruel.
 Summary:	Python bindings for GNU Radio vocoder
 Group:		Development/Python
 Requires:	python-%{name}-core = %{version}-%{release}
-Obsoletes:	python-gnuradio-cvsd-vocoder < 3.5.1
-Obsoletes:	python-gnuradio-gsm-fr-vocoder < 3.5.1
+Obsoletes:	python-%{name}-cvsd-vocoder < 3.5.1
+Obsoletes:	python-%{name}-gsm-fr-vocoder < 3.5.1
 
 %description -n python-%{name}-vocoder
 This package contains Python bindings for GNU Radio ATSC decoding.
@@ -799,6 +797,8 @@ Requires:	python-%{name}-core = %{version}-%{release}
 
 %description -n python-%{name}-atsc
 This package contains Python bindings for GNU Radio ATSC decoding.
+Code related to the Advanced Television Standards Committee HDTV
+implementation.
 
 %files -n python-%{name}-atsc
 %{python_sitearch}/%{name}/_atsc.*
@@ -810,9 +810,9 @@ This package contains Python bindings for GNU Radio ATSC decoding.
 Summary:	GNU Radio Python Audio Driver
 Group:		Development/Python
 Requires:	python-%{name}-core = %{version}-%{release}
-Obsoletes:	python-gnuradio-audio-alsa < 3.5.1
-Obsoletes:	python-gnuradio-audio-jack < 3.5.1
-Obsoletes:	python-gnuradio-audio-portaudio < 3.5.1
+Obsoletes:	python-%{name}-audio-alsa < 3.5.1
+Obsoletes:	python-%{name}-audio-jack < 3.5.1
+Obsoletes:	python-%{name}-audio-portaudio < 3.5.1
 
 %description -n python-%{name}-audio
 This package provides the Python interface to the GNU Radio driver for the
@@ -836,7 +836,7 @@ Requires:	python-scipy
 # Explicit require on PyQt4 Resolves: rhbz#781494
 Requires:	PyQt4
 # Obsoletes (python) with no new corresponding package added here
-Obsoletes:	python-gnuradio-msdd6000 < 3.5.1
+Obsoletes:	python-%{name}-msdd6000 < 3.5.1
 
 %description -n python-%{name}-core
 This package provides the modules that enable one to use gnuradio from
@@ -845,7 +845,7 @@ Python scripts.
 %files -n python-%{name}-core
 %dir %{_sysconfdir}/%{name}
 %dir %{_sysconfdir}/%{name}/conf.d
-%config(noreplace) %{_sysconfdir}/%{name}/conf.d/gnuradio-core.conf
+%config(noreplace) %{_sysconfdir}/%{name}/conf.d/%{name}-core.conf
 %dir %{python_sitearch}/%{name}
 %{python_sitearch}/%{name}/blks2
 %{python_sitearch}/%{name}/blks2impl
@@ -894,8 +894,8 @@ GNU Radio.
 Summary:	Python bindings for GNU Radio uhd driver
 Group:		Development/Python
 Requires:	python-%{name}-core = %{version}-%{release}
-Obsoletes:	python-gnuradio-usrp < 3.5.1
-Obsoletes:	python-gnuradio-usrp2 < 3.5.1
+Obsoletes:	python-%{name}-usrp < 3.5.1
+Obsoletes:	python-%{name}-usrp2 < 3.5.1
 
 %description -n python-%{name}-uhd
 This package provides the Python interface to the GNU Radio uhd driver
@@ -903,7 +903,6 @@ and daughterboard drivers.
 
 %files -n python-%{name}-uhd
 %{python_sitearch}/%{name}/uhd
-%{_bindir}/uhd_*
 
 
 ############################
@@ -922,14 +921,15 @@ This package provides an interface to the SDL rendering library for GNU Radio.
 
 ############################
 %package -n python-%{name}-wxgui
-Summary:	GNU Radio Graphical Interface Routines based on wxPython
+Summary:	GNU Radio GUI Routines based on wxPython
 Group:		Development/Python
 Requires:	python-%{name}-core = %{version}-%{release}
 Requires:	python-numpy
 Requires:	python-opengl
 
 %description -n python-%{name}-wxgui
-This package provides high level GUI construction classes based upon the wxPython bindings 
+This package provides high level GUI
+construction classes based upon the wxPython bindings 
 for wxWidgets.
 
 %files -n python-%{name}-wxgui
@@ -947,6 +947,40 @@ GNU Radio Fun Cube Dongle
 %files -n python-%{name}-fcd
 %{python_sitearch}/%{name}/fcd
 
+## TODO Fix Summary/Description
+############################
+%package -n python-%{name}-wavelet
+Summary:	GNU Radio wavelet
+Group:		Development/Python
+
+%description -n python-%{name}-wavelet
+GNU Radio wavelet
+
+%files -n python-%{name}-wavelet
+%{python_sitearch}/%{name}/wavelet
+
+############################
+%package -n python-%{name}-fft
+Summary:	GNU Radio fft
+Group:		Development/Python
+
+%description -n python-%{name}-fft
+GNU Radio fft
+
+%files -n python-%{name}-fft
+%{python_sitearch}/%{name}/fft
+%{python_sitearch}/%{name}/plot_fft_base.*
+
+############################
+%package -n python-%{name}-filter
+Summary:	GNU Radio filter
+Group:		Development/Python
+
+%description -n python-%{name}-filter
+GNU Radio filter
+
+%files -n python-%{name}-filter
+%{python_sitearch}/%{name}/filter
 
 ############################
 ############################
@@ -958,7 +992,7 @@ GNU Radio Fun Cube Dongle
 
 %package companion
 Summary:	The GNU Radio Companion
-Group:		Development/Other
+Group:		Communications
 Requires:	python-%{name}-core = %{version}-%{release}
 Requires:	python-cheetah
 Requires:	pygtk2.0
@@ -970,10 +1004,10 @@ GRC is a graphical flowgraph editor for the GNU Software Radio.
 
 %files companion
 %config(noreplace) %{_sysconfdir}/%{name}/conf.d/grc.conf
-%{_bindir}/gnuradio-companion
+%{_bindir}/%{name}-companion
 %{_datadir}/applications/%{name}-grc.desktop
 %{_datadir}/mime/application/*.xml
-%{_iconsdir}/hicolor/*/apps/gnuradio-grc.png
+%{_iconsdir}/hicolor/*/apps/%{name}-grc.png
 %{_datadir}/%{name}/grc
 %{python_sitearch}/%{name}/grc
 %{python_sitearch}/grc_%{name}
@@ -982,25 +1016,20 @@ GRC is a graphical flowgraph editor for the GNU Software Radio.
 ############################
 %package  noaa
 Summary:	GNU Radio NOAA POES HRPT receiver
-Group:		Development/Other
+Group:		Communications
 Requires:	python-%{name}-core = %{version}-%{release}
 
 %description noaa
 This package provides and implements an NOAA POES HRPT receiver.
 
 %files noaa
-#%{_bindir}/usrp_rx_hrpt.py
-#%{_bindir}/file_rx_hrpt.py
-#%{_bindir}/hrpt_decode.py
-#%{_bindir}/hrpt_demod.py
-#%{_bindir}/usrp_rx_hrpt_nogui.py
 %{python_sitearch}/%{name}/noaa
 
 
 ############################
 %package pager
 Summary:	GNU Radio FLEX Pager Decoder
-Group:		Development/Other
+Group:		Communications
 Requires:	python-%{name}-uhd = %{version}-%{release}
 
 %description pager
@@ -1014,36 +1043,37 @@ This package provides a decoder for the FLEX paging protocol for GNU Radio.
 ############################
 %package utils
 Summary:	GNU Radio Utilities
-Group:		Development/Other
+Group:		Communications
 Requires:	python-%{name}-wxgui = %{version}-%{release}
 Requires:	python-matplotlib
 Requires:	python-scipy
 Requires:	python-qt4
-Requires:	python-qwt
+#Requires:	python-qwt
 
 %description utils
 This package provides commonly used utilities for GNU Radio.
 
 %files utils
-%{_bindir}/gr_filter_design
-%{_bindir}/gr_plot*
 %{python_sitearch}/%{name}/plot_data.*
-%{python_sitearch}/%{name}/plot_fft*.py*
-%{python_sitearch}/%{name}/plot_psd*.py*
 %{python_sitearch}/%{name}/pyqt_filter.*
 %{python_sitearch}/%{name}/pyqt_plot.*
-%{_bindir}/gnuradio-config-info
+%{_bindir}/%{name}-config-info
 # This should really be in a devel package
 %{_libdir}/pkgconfig/gr-wxgui.pc
-# Not sure if this lives here
+
+## TODO Where do these live?
+%{_bindir}/gr_filter_design
+%{_bindir}/gr_plot_*
+%{_bindir}/uhd_*
 %{python_sitearch}/%{name}/gr_xmlrunner.*
+%{python_sitearch}/%{name}/plot_psd_base.*
 
 ############################
 ############################
 %prep
 %setup -q -n %{name}-%{version}
-%patch0 -p0 -b .gnuradio-3.5.1-mga-fix_install_paths_in_CMakeLists.patch
-%patch2 -p1 -b .gnuradio-3.6.1-linkage.patch
+%patch0 -p0 -b .gnuradio-3.6.2-mga-fix_install_paths_in_CMakeLists.patch
+%patch2 -p1 -b .gnuradio-3.6.1-fix-linkage.patch
 
 %build
 %cmake
@@ -1062,24 +1092,25 @@ make
 #icons
 for i in 32 48 64 128 256; do
 	install -Dpm0644 %{buildroot}%{_datadir}/%{name}/grc/freedesktop/grc-icon-${i}.png \
-		%{buildroot}/%{_iconsdir}/hicolor/${i}x${i}/apps/gnuradio-grc.png
+		%{buildroot}/%{_iconsdir}/hicolor/${i}x${i}/apps/%{name}-grc.png
 done
 
+############################
 # Desktop files
 mkdir -p %{buildroot}%{_datadir}/applications
 mkdir -p %{buildroot}%{_datadir}/mime/application
-mv %{buildroot}%{_datadir}/%{name}/grc/freedesktop/gnuradio-grc.xml %{buildroot}%{_datadir}/mime/application/
+mv %{buildroot}%{_datadir}/%{name}/grc/freedesktop/%{name}-grc.xml %{buildroot}%{_datadir}/mime/application/
 
-cat > gnuradio-doc.desktop << EOF
+cat > %{name}-doc.desktop << EOF
 [Desktop Entry]
 Version=1.0
 Name=Gnu Radio C++ API Documentation
 GenericName=Gnu Radio C++ API Documentation
 Exec=xdg-open /usr/share/doc/%{name}-%{version}/html/index.html
-Icon=gnuradio-grc
+Icon=%{name}-grc
 Terminal=false
 Type=Application
-Categories=System;Documentation;X-Mandriva-Desktop;
+Categories=System;Documentation;X-Mageia-CrossDesktop;
 X-Desktop-File-Install-Version=0.19
 EOF
 
@@ -1087,7 +1118,7 @@ desktop-file-install \
 --dir=%{buildroot}%{_datadir}/applications %{name}-doc.desktop
 
 desktop-file-install \
---add-category='X-Mandriva-Desktop' \
+--add-category='X-Mageia-CrossDesktop' \
 --set-key=Name \
 --set-value='Gnu Radio Companion' \
 --dir=%{buildroot}%{_datadir}/applications %{buildroot}%{_datadir}/%{name}/grc/freedesktop/%{name}-grc.desktop
@@ -1096,6 +1127,6 @@ desktop-file-install \
 
 #we don't want these
 find %{buildroot} -name "*.la" -exec rm -rf {} \;
-rm -rf %{buildroot}%{_bindir}/create-gnuradio-out-of-tree-project
+rm -rf %{buildroot}%{_bindir}/create-%{name}-out-of-tree-project
 rm -rf %{buildroot}%{_libdir}/%{name}/grc_setup_freedesktop
-rm -rf %{buildroot}/%{_datadir}/%{name}/grc/freedesktop	
+rm -rf %{buildroot}/%{_datadir}/%{name}/grc/freedesktop
