@@ -36,7 +36,7 @@
 
 Name:		gnuradio
 Version:	3.6.2
-Release:	%mkrel 4
+Release:	5
 Summary:	Software defined radio framework
 Group:		Communications
 License:	GPLv3+
@@ -46,6 +46,8 @@ Source0:	%{name}-%{version}.tar.gz
 # $ ./make-tarball gnuradio http://gnuradio.org/git/gnuradio.git
 # See note in make-tarball script
 Source1:	make-tarball
+Source100:	%{name}.rplintrc
+
 Patch0:		gnuradio-3.6.2-mga-fix_install_paths_in_CMakeLists.patch
 Patch2:		gnuradio-3.6.1-fix-linkage.patch
 
@@ -1130,3 +1132,23 @@ find %{buildroot} -name "*.la" -exec rm -rf {} \;
 rm -rf %{buildroot}%{_bindir}/create-%{name}-out-of-tree-project
 rm -rf %{buildroot}%{_libdir}/%{name}/grc_setup_freedesktop
 rm -rf %{buildroot}/%{_datadir}/%{name}/grc/freedesktop
+#####################
+# fixings
+
+chmod +x %{buildroot}%{python_sitearch}/%{name}/digital/{ofdm_sync_fixed,utils/__init__,ofdm_receiver,utils/gray_code,utils/alignment,ofdm_sync_pn,utils/mod_codes,ofdm_sync_ml,ofdm_sync_pnac,ofdm}.py
+chmod +x %{buildroot}%{python_sitearch}/%{name}/{vocoder/cvsd,gruimpl/lmx2306,blks2impl/pfb_decimator,gruimpl/gnuplot_freqz,gr/pubsub,gruimpl/freqz,blks2impl/pfb_interpolator,blks2impl/pfb_arb_resampler,blks2impl/pfb_channelizer,blks2impl/channel_model,gr_unittest,uhd/uhd_siggen_base,wxgui/powermate,wxgui/plotter/gltext,wxgui/form,wxgui/pubsub,wxgui/waterfallsink_nongl,wxgui/fftsink_nongl,wxgui/scopesink_nongl,wxgui/slider,plot_fft_base,filter/pfb,plot_psd_base}.py
+
+chmod +x %{buildroot}%{python_sitearch}/%{name}/grc/python/flow_graph.tmpl 
+find %{buildroot} -size 0 -delete
+
+
+
+
+
+
+
+
+
+
+
+
