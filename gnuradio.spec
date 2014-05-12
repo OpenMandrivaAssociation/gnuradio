@@ -46,7 +46,7 @@ Source0:	%{name}-%{version}.tar.gz
 # $ ./make-tarball gnuradio http://gnuradio.org/git/gnuradio.git
 # See note in make-tarball script
 Source1:	make-tarball
-Source100:      %{name}.rplintrc
+Source100:  gnuradio.rpmlintrc
 Patch0:		gnuradio-3.6.2-mga-fix_install_paths_in_CMakeLists.patch
 Patch2:		gnuradio-3.6.1-fix-linkage.patch
 
