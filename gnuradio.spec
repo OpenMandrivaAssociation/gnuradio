@@ -58,7 +58,7 @@ BuildRequires:	pygtk2.0-libglade
 BuildRequires:	python-cheetah
 BuildRequires:	python-lxml
 BuildRequires:	python-numpy
-BuildRequires:	sdcc
+BuildRequires:	sdcc >= 3.3.0
 BuildRequires:	swig
 BuildRequires:	wxPython
 BuildRequires:	xdg-utils
