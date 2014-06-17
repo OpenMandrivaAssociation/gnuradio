@@ -50,6 +50,8 @@
 %define libgruel	%mklibname gruel %{major}
 %define devgruel	%mklibname gruel -d
 
+%bcond_with ice
+
 #######################################################
 Name:		gnuradio
 Version:	3.7.3
@@ -96,8 +98,10 @@ BuildRequires:	orc-devel
 BuildRequires:	uhd-devel
 BuildRequires:	python-numpy
 BuildRequires:	qwt-devel
-#BuildRequires:	python-ice-devel
-#BuildRequires:	ice-devel
+%if %{with ice}
+BuildRequires:	python-ice-devel
+BuildRequires:	ice-devel
+%endif
 
 Requires(pre):	shadow-utils
 
@@ -166,7 +170,7 @@ This is a virtual package that installs the entire GNU Radio software set.
 ############################
 %package doc
 Summary:	Software Defined Radio
-Group:		Communications/Radio
+Group:		Communications
 BuildArch:	noarch
 
 %description doc
@@ -180,7 +184,7 @@ defined radio system.
 ############################
 %package examples
 Summary:	GNU Radio Example Programs
-Group:		Communications/Radio
+Group:		Communications
 
 %description examples
 This package provides examples of GNU Radio usage using Python.
@@ -968,8 +972,8 @@ Group:		Development/Python
 Requires:	python-%{name}-runtime = %{EVRD}
 
 %description -n python-%{name}-wxgui
-This package provides high level GUI construction classes based upon the wxPython bindings
-for wxWidgets.
+This package provides high level GUI construction classes based upon the
+wxPython bindings for wxWidgets.
 
 %files -n python-%{name}-wxgui
 %config(noreplace) %{_sysconfdir}/%{name}/conf.d/gr-wxgui.conf
@@ -1095,6 +1099,7 @@ GNU Radio modtool
 %{py_platsitedir}/volk_modtool/*
 
 ############################
+%if %{with ice}
 %package -n python-%{name}-ctrlport
 Summary:	GNU Radio ctrlport
 Group:		Development/Python
@@ -1107,6 +1112,7 @@ GNU Radio ctrlport
 %{py_platsitedir}/%{name}/ctrlport
 %{py_platsitedir}/frontend_ice.*
 %{py_platsitedir}/%{name}_ice.*
+%endif
 
 #######################################################
 #######################################################
@@ -1118,7 +1124,7 @@ GNU Radio ctrlport
 
 %package companion
 Summary:	The GNU Radio Companion
-Group:		Communications/Radio
+Group:		Communications
 Requires:	python-%{name}-runtime = %{EVRD}
 Requires:	python-gnuradio-pmt = %{EVRD}
 Suggests:	%{name}-examples = %{EVRD}
@@ -1144,7 +1150,7 @@ GRC is a graphical flowgraph editor for the GNU Software Radio.
 ############################
 %package  noaa
 Summary:	GNU Radio NOAA POES HRPT receiver
-Group:		Communications/Radio
+Group:		Communications
 Requires:	python-%{name}-runtime = %{EVRD}
 
 %description noaa
@@ -1156,7 +1162,7 @@ This package provides and implements an NOAA POES HRPT receiver.
 ############################
 %package pager
 Summary:	GNU Radio FLEX Pager Decoder
-Group:		Communications/Radio
+Group:		Communications
 Requires:	python-%{name}-uhd = %{EVRD}
 
 %description pager
@@ -1169,12 +1175,12 @@ This package provides a decoder for the FLEX paging protocol for GNU Radio.
 ############################
 %package utils
 Summary:	GNU Radio Utilities
-Group:		Communications/Radio
+Group:		Communications
 Requires:	python-%{name}-wxgui = %{EVRD}
 Requires:	python-matplotlib
 Requires:	python-scipy
 Requires:	python-qt4
-Requires:	python-qwt
+#Requires:	python-qwt
 
 %description utils
 This package provides commonly used utilities for GNU Radio.
@@ -1213,6 +1219,7 @@ This package provides commonly used utilities for GNU Radio.
 %{_bindir}/volk_modtool
 %{_bindir}/volk_profile
 %{_bindir}/volk-config-info
+%if %{with ice}
 %{_bindir}/gr-ctrlport-curses
 %{_bindir}/gr-ctrlport-cursesc
 %{_bindir}/gr-ctrlport-curseso
@@ -1222,6 +1229,7 @@ This package provides commonly used utilities for GNU Radio.
 %{_bindir}/gr-perf-monitorx
 %{_bindir}/gr-perf-monitorxc
 %{_bindir}/gr-perf-monitorxo
+%endif
 %{_libdir}/cmake/%{name}
 
 #######################################################
@@ -1281,5 +1289,5 @@ desktop-file-install \
 
 ############################
 # We don't need these:
-rm -f %{buildroot}%{_libexecdir}/%{name}/grc_setup_freedesktop
+rm -f %{buildroot}/usr/libexec/%{name}/grc_setup_freedesktop
 rm -rf %{buildroot}/%{_datadir}/%{name}/grc/freedesktop
