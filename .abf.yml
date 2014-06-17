@@ -1,2 +1,4 @@
+removed_sources:
+  gnuradio-3.6.2.tar.gz: 47d3852e2e3015a9eccdf9bf35c75a2a075db01a
 sources:
-  "gnuradio-3.6.2.tar.gz": 47d3852e2e3015a9eccdf9bf35c75a2a075db01a
+  gnuradio-3.7.3.tar.gz: 0bba01381dbf6c100b00242e55a04e6121a713b1

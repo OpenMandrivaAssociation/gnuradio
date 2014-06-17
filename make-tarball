@@ -1,25 +1,37 @@
 #!/bin/bash
 # make-tarball
 ########################
-# This script will download git master, list the available tagged revisions
+# This script will clone git, list the available tagged revisions
 # and create a tarball of the selected version.
-# It will then delete git master.
-# Run as user from the SOURCES dir with: ./make-tarball <tarname> <git-URL>
+# It will then delete the git directory.
+# If the HEAD option is added, then it will use git head and add the revision #
+# to the tarball name.
+# Run as user from the SOURCES dir with: 
+#  $ ./make-tarball <tarname> <git-URL> [HEAD]
+# Examples:
+#  $ ./make-tarball gnuradio http://gnuradio.org/git/gnuradio.git
+#  $ ./make-tarball gnuradio http://gnuradio.org/git/gnuradio.git HEAD
 # ######################
+
+(( $# > 1 )) ||  { echo "Usage: $ ./make-tarball <tarname> <git-url> [HEAD]"; exit 1; }
 name="$1"
 url="$2"
+opt="$3"
+
 echo "Please wait - this may take some time ..."
-[[ -d ${name} ]] && rm -rf ${name}
-git clone "$url"
+  git clone "$url"
 cd ${name}
-tag_lst=($(git tag -l))
-echo -e "Version tags available:- ${tag_lst[@]}\n"
-read -p "Enter the exact tag string you wish to select (e.g. v3.5.1 ) " ver_tag
-read -p "Enter the filename version suffix to use (e.g. 3.5.1 ) " ver
-git checkout ${ver_tag}
-git archive --format=tar --prefix=${name}-${ver}/ ${ver_tag} | gzip > ../${name}-${ver}.tar.gz
-[[ $? = 0 ]] && { echo "Written file: ${name}-${ver}.tar.gz"; cd ..; rm -rf ${name}; }
-
-
-
-
+if [[ -z  $opt ]]; then
+  tag_lst=($(git tag -l))
+  echo -e "Version tags available:- ${tag_lst[@]}\n"
+  read -p "Enter the exact tag string you wish to select (e.g. v3.5.1 ) " ver_tag
+  read -p "Enter the tarball version suffix to use (e.g. 3.5.1 ) " ver
+  git checkout ${ver_tag}
+  git archive --format=tar.gz --prefix=${name}-${ver}/ ${ver_tag} > ../${name}-${ver}.tar.gz
+  [[ $? = 0 ]] && { echo "Written file: ${name}-${ver}.tar.gz"; cd ..; rm -rf ${name}; }
+else
+  rev=$(git rev-list HEAD | wc -l)
+  read -p "Enter the tarball version suffix to use (e.g. 3.5.1 ) " ver
+  git archive $opt --format=tar.gz --prefix=${name}/ > ../${name}-${ver}-${rev}.tar.gz
+  [[ $? = 0 ]] && { echo "Written file: ${name}-${ver}-${rev}.tar.gz"; cd ..; rm -rf ${name}; }
+fi
