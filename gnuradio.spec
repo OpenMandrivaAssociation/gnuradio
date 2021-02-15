@@ -112,7 +112,7 @@ BuildRequires:	python-six
 BuildRequires:	python-sphinx
 BuildRequires:	python-yaml
 BuildRequires:	swig
-#BuildRequires:	texlive
+BuildRequires:	texlive
 BuildRequires:	xdg-utils
 # For tests
 BuildRequires:	python-scipy
