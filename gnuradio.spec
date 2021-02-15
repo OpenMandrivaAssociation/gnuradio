@@ -92,7 +92,7 @@ BuildRequires:	pkgconfig(ice)
 BuildRequires:	pkgconfig(log4cpp)
 BuildRequires:	pkgconfig(orc-0.4)
 BuildRequires:	pkgconfig(portaudio-2.0)
-BuildRequires:	pkgconfig(python3)
+BuildRequires:	pkgconfig(python)
 BuildRequires:	pkgconfig(Qt5Qwt6)
 BuildRequires:	pkgconfig(sdl)
 BuildRequires:	pkgconfig(uhd) >= 3.15
@@ -722,13 +722,13 @@ This package contains header files needed by developers.
 %package -n python-%{name}-runtime
 Summary:	Python bindings for GNU Radio runtime library
 Group:		Development/Python
-Requires:	python3-mako
-Requires:	python3-numpy
-Requires:	python3-cheetah
-Requires:	python3-scipy
-Requires:	python3-opengl
-Requires:	python3-pyzmq
-Requires:	python3-six
+Requires:	python-mako
+Requires:	python-numpy
+Requires:	python-cheetah
+Requires:	python-scipy
+Requires:	python-opengl
+Requires:	python-pyzmq
+Requires:	python-six
 
 %description -n python-%{name}-runtime
 This package provides the modules that enable one to use gnuradio from
@@ -738,13 +738,13 @@ Python scripts.
 %dir %{_sysconfdir}/%{name}
 %dir %{_sysconfdir}/%{name}/conf.d
 %config(noreplace) %{_sysconfdir}/%{name}/conf.d/%{name}-runtime.conf
-%dir %{python3_sitelib}/%{name}
-%{python3_sitelib}/%{name}/gr
-%{python3_sitelib}/%{name}/gru
-%{python3_sitelib}/%{name}/__init__.*
-%{python3_sitelib}/%{name}/eng_notation.*
-%{python3_sitelib}/%{name}/eng_option.*
-%{python3_sitelib}/%{name}/gr_unittest.*
+%dir %{python_sitelib}/%{name}
+%{python_sitelib}/%{name}/gr
+%{python_sitelib}/%{name}/gru
+%{python_sitelib}/%{name}/__init__.*
+%{python_sitelib}/%{name}/eng_notation.*
+%{python_sitelib}/%{name}/eng_option.*
+%{python_sitelib}/%{name}/gr_unittest.*
 
 ############################
 %package -n python-%{name}-vocoder
@@ -756,7 +756,7 @@ Requires:	python-%{name}-runtime = %{version}-%{release}
 This package contains Python bindings for GNU Radio ATSC decoding.
 
 %files -n python-%{name}-vocoder
-%{python3_sitelib}/%{name}/vocoder/*
+%{python_sitelib}/%{name}/vocoder/*
 
 ############################
 %package -n python-%{name}-audio
@@ -770,7 +770,7 @@ audio system.
 
 %files -n python-%{name}-audio
 %config(noreplace) %{_sysconfdir}/%{name}/conf.d/gr-audio.conf
-%{python3_sitelib}/%{name}/audio/*
+%{python_sitelib}/%{name}/audio/*
 
 ############################
 %package -n python-%{name}-qtgui
@@ -783,7 +783,7 @@ This package provides the Python wrappers around the GNU Radio QT GUI
 C++ blocks.
 
 %files -n python-%{name}-qtgui
-%{python3_sitelib}/%{name}/qtgui
+%{python_sitelib}/%{name}/qtgui
 
 ############################
 %package -n python-%{name}-trellis
@@ -796,7 +796,7 @@ This package provides an implementation of trellis-coded modulation for
 GNU Radio.
 
 %files -n python-%{name}-trellis
-%{python3_sitelib}/%{name}/trellis/*
+%{python_sitelib}/%{name}/trellis/*
 
 ############################
 %package -n python-%{name}-uhd
@@ -809,7 +809,7 @@ This package provides the Python interface to the GNU Radio uhd driver
 and daughterboard drivers.
 
 %files -n python-%{name}-uhd
-%{python3_sitelib}/%{name}/uhd
+%{python_sitelib}/%{name}/uhd
 
 ############################
 %package -n python-%{name}-video-sdl
@@ -821,7 +821,7 @@ Requires:	python-%{name}-runtime = %{version}-%{release}
 This package provides an interface to the SDL rendering library for GNU Radio.
 
 %files -n python-%{name}-video-sdl
-%{python3_sitelib}/%{name}/video_sdl/*
+%{python_sitelib}/%{name}/video_sdl/*
 
 ############################
 %package -n python-%{name}-channels
@@ -833,7 +833,7 @@ Requires:	python-%{name}-runtime = %{version}-%{release}
 GNU Radio channels
 
 %files -n python-%{name}-channels
-%{python3_sitelib}/%{name}/channels
+%{python_sitelib}/%{name}/channels
 
 ############################
 %package -n python-%{name}-fec
@@ -845,21 +845,21 @@ Requires:	python-%{name}-runtime = %{version}-%{release}
 GNU Radio fec
 
 %files -n python-%{name}-fec
-%{python3_sitelib}/%{name}/fec
+%{python_sitelib}/%{name}/fec
 
 ############################
 %package -n python-%{name}-pmt
 Summary:	GNU Radio pmt
 Group:		Development/Python
 Requires:	python-%{name}-runtime = %{version}-%{release}
-Requires:	python3-numpy
-Requires:	python3-opengl
+Requires:	python-numpy
+Requires:	python-opengl
 
 %description -n python-%{name}-pmt
 GNU Radio pmt
 
 %files -n python-%{name}-pmt
-%{python3_sitelib}/pmt/*
+%{python_sitelib}/pmt/*
 
 ############################
 %package -n python-%{name}-wavelet
@@ -870,7 +870,7 @@ Group:		Development/Python
 GNU Radio wavelet
 
 %files -n python-%{name}-wavelet
-%{python3_sitelib}/%{name}/wavelet
+%{python_sitelib}/%{name}/wavelet
 
 ############################
 %package -n python-%{name}-fft
@@ -881,21 +881,21 @@ Group:		Development/Python
 GNU Radio fft
 
 %files -n python-%{name}-fft
-%{python3_sitelib}/%{name}/fft
-%{python3_sitelib}/%{name}/plot_fft_base.*
+%{python_sitelib}/%{name}/fft
+%{python_sitelib}/%{name}/plot_fft_base.*
 
 ############################
 %package -n python-%{name}-filter
 Summary:	GNU Radio filter
 Group:		Development/Python
-Requires:	python3-pyqtgraph
+Requires:	python-pyqtgraph
 
 %description -n python-%{name}-filter
 GNU Radio filter
 
 %files -n python-%{name}-filter
-%{python3_sitelib}/%{name}/filter
-%{python3_sitelib}/%{name}/pyqt_filter.*
+%{python_sitelib}/%{name}/filter
+%{python_sitelib}/%{name}/pyqt_filter.*
 
 ############################
 %package -n python-%{name}-analog
@@ -906,7 +906,7 @@ Group:		Development/Python
 GNU Radio analog
 
 %files -n python-%{name}-analog
-%{python3_sitelib}/%{name}/analog
+%{python_sitelib}/%{name}/analog
 
 ############################
 %package -n python-%{name}-blocks
@@ -917,7 +917,7 @@ Group:		Development/Python
 GNU Radio blocks
 
 %files -n python-%{name}-blocks
-%{python3_sitelib}/%{name}/blocks
+%{python_sitelib}/%{name}/blocks
 
 ############################
 %package -n python-%{name}-modtool
@@ -929,7 +929,7 @@ GNU Radio modtool
 
 %files -n python-%{name}-modtool
 %config(noreplace) %{_sysconfdir}/%{name}/conf.d/modtool.conf
-%{python3_sitelib}/%{name}/modtool
+%{python_sitelib}/%{name}/modtool
 %{_datadir}/%{name}/modtool/templates
 
 ############################
@@ -941,49 +941,49 @@ Group:		Development/Python
 GNU Radio ctrlport
 
 %files -n python-%{name}-ctrlport
-%{python3_sitelib}/%{name}/ctrlport
+%{python_sitelib}/%{name}/ctrlport
 
 ############################
 %package -n python-%{name}-zeromq
 Summary:	GNU Radio zeromq
 Group:		Development/Python
 Requires:	python-%{name}-runtime = %{version}-%{release}
-Requires:	python3-numpy
-Requires:	python3-opengl
+Requires:	python-numpy
+Requires:	python-opengl
 
 %description -n python-%{name}-zeromq
 GNU Radio zeromq
 
 %files -n python-%{name}-zeromq
-%{python3_sitelib}/%{name}/zeromq
+%{python_sitelib}/%{name}/zeromq
 
 ############################
 %package -n python-%{name}-dtv
 Summary:	GNU Radio dtv
 Group:		Development/Python
 Requires:	python-%{name}-runtime = %{version}-%{release}
-Requires:	python3-numpy
-Requires:	python3-opengl
+Requires:	python-numpy
+Requires:	python-opengl
 
 %description -n python-%{name}-dtv
 GNU Radio dtv
 
 %files -n python-%{name}-dtv
-%{python3_sitelib}/%{name}/dtv
+%{python_sitelib}/%{name}/dtv
 
 ###########################
 %package -n python-%{name}-digital
 Summary:	GNU Radio digital
 Group:		Development/Python
 Requires:	python-%{name}-runtime = %{version}-%{release}
-Requires:	python3-numpy
-Requires:	python3-opengl
+Requires:	python-numpy
+Requires:	python-opengl
 
 %description -n python-%{name}-digital
 GNU Radio digital
 
 %files -n python-%{name}-digital
-%{python3_sitelib}/%{name}/digital
+%{python_sitelib}/%{name}/digital
 
 #######################################################
 #######################################################
@@ -999,7 +999,7 @@ Group:		Communications/Radio
 Requires:	python-%{name}-runtime = %{version}-%{release}
 Requires:	python-gnuradio-pmt = %{version}-%{release}
 Recommends:	%{name}-examples = %{version}-%{release}
-Requires:	python3-cheetah
+Requires:	python-cheetah
 
 %description companion
 GRC is a graphical flowgraph editor for the GNU Software Radio.
@@ -1015,7 +1015,7 @@ GRC is a graphical flowgraph editor for the GNU Software Radio.
 %{_datadir}/%{name}/themes/*.qss
 %{_iconsdir}/hicolor/*
 %{_iconsdir}/gnome/*
-%{python3_sitelib}/%{name}/grc
+%{python_sitelib}/%{name}/grc
 
 ############################
 %package utils
@@ -1028,11 +1028,11 @@ Requires:	python-scipy
 This package provides commonly used utilities for GNU Radio.
 
 %files utils
-%{python3_sitelib}/%{name}/__pycache__/*
-%{python3_sitelib}/%{name}/plot_psd_base.*
-%{python3_sitelib}/%{name}/plot_data.*
-%{python3_sitelib}/%{name}/pyqt_plot.*
-%{python3_sitelib}/%{name}/eng_arg.*
+%{python_sitelib}/%{name}/__pycache__/*
+%{python_sitelib}/%{name}/plot_psd_base.*
+%{python_sitelib}/%{name}/plot_data.*
+%{python_sitelib}/%{name}/pyqt_plot.*
+%{python_sitelib}/%{name}/eng_arg.*
 %{_bindir}/%{name}-config-info
 %{_bindir}/gr_filter_design
 %{_bindir}/gr_plot
