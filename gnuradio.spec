@@ -67,6 +67,7 @@ Patch3:		gnuradio-bind-placeholders.patch
 
 
 BuildRequires:	boost-devel
+BuildRequires:	meson
 BuildRequires:	cmake
 BuildRequires:	cppzmq-devel
 BuildRequires:	doxygen
