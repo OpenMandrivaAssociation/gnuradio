@@ -53,13 +53,13 @@
 %define devwxgui	%mklibname %{name}-wxgui -d
 
 Name:		gnuradio
-Version:	3.8.2.0
-Release:	%mkrel 7
+Version:	3.10.4.0
+Release:	1
 Summary:	Software defined radio framework
 Group:		Communications/Radio
 License:	GPLv3+
 URL:		http://www.gnuradio.org
-Source0:	https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
+Source0:	https://github.com/gnuradio/gnuradio/archive/refs/tags/v%{version}.tar.gz
 Patch0:		gnuradio-3.7.1-mga-cmakelists.patch
 Patch1:		gnuradio-3.7.9-ubu-FindGSL.cmake.patch
 Patch2:		gnuradio-allow-overriding-GR_PYTHON_DIR-from-cmd-line.patch
