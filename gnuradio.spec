@@ -96,6 +96,10 @@ BuildRequires:	pkgconfig(Qt5Qwt6)
 BuildRequires:	pkgconfig(sdl)
 BuildRequires:	pkgconfig(uhd) >= 3.15
 BuildRequires:	pkgconfig(volk) >= 2.4
+BuildRequires:	pkgconfig(sndfile)
+BuildRequires:	pkgconfig(libiio)
+BuildRequires:	python%{pyver}dist(pybind11)
+BuildRequires:	cmake(pybind11)
 BuildRequires:	python-cheetah
 BuildRequires:	python-click
 BuildRequires:	python-click-plugins
