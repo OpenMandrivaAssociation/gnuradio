@@ -3,41 +3,41 @@
 %endif
 
 %define major		3
-%define libuhd		%mklibname %{name}-uhd %{major}
+%define libuhd		%mklibname %{name}-uhd
 %define devuhd		%mklibname %{name}-uhd -d
-%define libaudio	%mklibname %{name}-audio %{major}
+%define libaudio	%mklibname %{name}-audio
 %define devaudio	%mklibname %{name}-audio -d
-%define libruntime	%mklibname %{name}-runtime %{major}
+%define libruntime	%mklibname %{name}-runtime
 %define devruntime	%mklibname %{name}-runtime -d
-%define libvocoder	%mklibname %{name}-vocoder %{major}
+%define libvocoder	%mklibname %{name}-vocoder
 %define devvocoder	%mklibname %{name}-vocoder -d
-%define libqtgui	%mklibname %{name}-qtgui %{major}
+%define libqtgui	%mklibname %{name}-qtgui
 %define devqtgui	%mklibname %{name}-qtgui -d
-%define libtrellis	%mklibname %{name}-trellis %{major}
+%define libtrellis	%mklibname %{name}-trellis
 %define devtrellis	%mklibname %{name}-trellis -d
-%define libvideo_sdl %mklibname %{name}-video-sdl %{major}
+%define libvideo_sdl %mklibname %{name}-video-sdl
 %define devvideo_sdl %mklibname %{name}-video-sdl -d
-%define libwavelet	%mklibname %{name}-wavelet %{major}
+%define libwavelet	%mklibname %{name}-wavelet
 %define devwavelet	%mklibname %{name}-wavelet -d
-%define libfft		%mklibname %{name}-fft %{major}
+%define libfft		%mklibname %{name}-fft
 %define devfft		%mklibname %{name}-fft -d
-%define libfilter	%mklibname %{name}-filter %{major}
+%define libfilter	%mklibname %{name}-filter
 %define devfilter	%mklibname %{name}-filter -d
-%define libanalog	%mklibname %{name}-analog %{major}
+%define libanalog	%mklibname %{name}-analog
 %define devanalog	%mklibname %{name}-analog -d
-%define libblocks	%mklibname %{name}-blocks %{major}
+%define libblocks	%mklibname %{name}-blocks
 %define devblocks	%mklibname %{name}-blocks -d
-%define libchannels	%mklibname %{name}-channels %{major}
+%define libchannels	%mklibname %{name}-channels
 %define devchannels	%mklibname %{name}-channels -d
-%define libfec		%mklibname %{name}-fec %{major}
+%define libfec		%mklibname %{name}-fec
 %define devfec		%mklibname %{name}-fec -d
-%define libpmt		%mklibname %{name}-pmt %{major}
+%define libpmt		%mklibname %{name}-pmt
 %define devpmt		%mklibname %{name}-pmt -d
-%define libzeromq	%mklibname %{name}-zeromq %{major}
+%define libzeromq	%mklibname %{name}-zeromq
 %define devzeromq	%mklibname %{name}-zeromq -d
-%define libdtv		%mklibname %{name}-dtv %{major}
+%define libdtv		%mklibname %{name}-dtv
 %define devdtv		%mklibname %{name}-dtv -d
-%define libdigital	%mklibname %{name}-digital %{major}
+%define libdigital	%mklibname %{name}-digital
 %define devdigital	%mklibname %{name}-digital -d
 
 # For obsoletes only
@@ -60,10 +60,9 @@ Group:		Communications/Radio
 License:	GPLv3+
 URL:		http://www.gnuradio.org
 Source0:	https://github.com/gnuradio/gnuradio/archive/refs/tags/v%{version}.tar.gz
-Patch0:		gnuradio-3.7.1-mga-cmakelists.patch
-Patch1:		gnuradio-3.7.9-ubu-FindGSL.cmake.patch
-Patch2:		gnuradio-allow-overriding-GR_PYTHON_DIR-from-cmd-line.patch
-Patch3:		gnuradio-bind-placeholders.patch
+#Patch1:		gnuradio-3.7.9-ubu-FindGSL.cmake.patch
+#Patch2:		gnuradio-allow-overriding-GR_PYTHON_DIR-from-cmd-line.patch
+#Patch3:		gnuradio-bind-placeholders.patch
 
 
 BuildRequires:	boost-devel
@@ -101,7 +100,7 @@ BuildRequires:	python-cheetah
 BuildRequires:	python-click
 BuildRequires:	python-click-plugins
 #BuildRequires:	python-ice-devel
-BuildRequires:	python-gobject
+#BuildRequires:	python-gobject
 BuildRequires:	python-gi
 BuildRequires:	python-gi-cairo
 BuildRequires:	python-numpy
@@ -186,6 +185,30 @@ performance wireless devices into software problems.
 This is a virtual package that installs the entire GNU Radio software set.
 
 %files
+%{_datadir}/metainfo/org.gnuradio.grc.metainfo.xml
+%{_mandir}/man1/dial_tone.1*
+%{_mandir}/man1/display_qt.1*
+%{_mandir}/man1/gnuradio-companion.1*
+%{_mandir}/man1/gnuradio-config-info.1*
+%{_mandir}/man1/gr-ctrlport-monitor.1*
+%{_mandir}/man1/gr-perf-monitorx.1*
+%{_mandir}/man1/gr_filter_design.1*
+%{_mandir}/man1/gr_modtool.1*
+%{_mandir}/man1/gr_plot_const.1*
+%{_mandir}/man1/gr_plot_fft.1*
+%{_mandir}/man1/gr_plot_iq.1*
+%{_mandir}/man1/gr_plot_psd.1*
+%{_mandir}/man1/gr_plot_qt.1*
+%{_mandir}/man1/gr_plot_time.1*
+%{_mandir}/man1/gr_read_file_metadata.1*
+%{_mandir}/man1/grcc.1*
+%{_mandir}/man1/polar_channel_construction.1*
+%{_mandir}/man1/tags_demo.1*
+%{_mandir}/man1/uhd_fft.1*
+%{_mandir}/man1/uhd_rx_cfile.1*
+%{_mandir}/man1/uhd_rx_nogui.1*
+%{_mandir}/man1/uhd_siggen.1*
+%{_mandir}/man1/uhd_siggen_gui.1*
 
 ############################
 %package doc
@@ -245,7 +268,7 @@ Provides:	%{name}-uhd-devel = %{version}-%{release}
 This package contains header files needed by developers.
 
 %files -n %{devuhd}
-%{_includedir}/%{name}/uhd/*.h
+%{_includedir}/%{name}/uhd
 %{_libdir}/pkgconfig/%{name}-uhd.pc
 %{_libdir}/lib%{name}-uhd*.so
 
@@ -273,7 +296,7 @@ Provides:	%{name}-audio-devel = %{version}-%{release}
 This package contains header files needed by developers.
 
 %files -n %{devaudio}
-%{_includedir}/%{name}/audio/*.h
+%{_includedir}/%{name}/audio
 %{_libdir}/pkgconfig/%{name}-audio.pc
 %{_libdir}/lib%{name}-audio*.so
 
@@ -287,6 +310,10 @@ This package contains the GNU Radio runtime libraries.
 
 %files -n %{libruntime}
 %{_libdir}/lib%{name}-runtime*.so.%{major}{,.*}
+%{_libdir}/lib%{name}-iio*.so.%{major}{,.*}
+%{_libdir}/lib%{name}-network*.so.%{major}{,.*}
+%{_libdir}/lib%{name}-pdu*.so.%{major}{,.*}
+%{_libdir}/lib%{name}-soapy*.so.%{major}{,.*}
 
 ############################
 %package -n %{devruntime}
@@ -302,11 +329,23 @@ This package contains header files needed by developers.
 %files -n %{devruntime}
 %dir %{_includedir}/%{name}
 %{_includedir}/%{name}/*.h
-%{_includedir}/%{name}/messages/*.h
-%{_includedir}/%{name}/thread/*.h
-%{_includedir}/%{name}/swig
+%{_includedir}/%{name}/messages
+%{_includedir}/%{name}/thread
+%{_includedir}/%{name}/iio
+%{_includedir}/%{name}/network
+%{_includedir}/%{name}/pdu
+%{_includedir}/%{name}/soapy
 %{_libdir}/pkgconfig/%{name}-runtime.pc
+%{_libdir}/pkgconfig/%{name}-iio.pc
+%{_libdir}/pkgconfig/%{name}-network.pc
+%{_libdir}/pkgconfig/%{name}-pdu.pc
+%{_libdir}/pkgconfig/%{name}-soapy.pc
 %{_libdir}/lib%{name}-runtime*.so
+%{_libdir}/lib%{name}-iio*.so
+%{_libdir}/lib%{name}-network*.so
+%{_libdir}/lib%{name}-pdu*.so
+%{_libdir}/lib%{name}-soapy*.so
+%{_datadir}/gnuradio/clang-format.conf
 
 ############################
 
@@ -332,7 +371,7 @@ Provides:	%{name}-vocoder-devel = %{version}-%{release}
 This package contains header files needed by developers.
 
 %files -n %{devvocoder}
-%{_includedir}/%{name}/vocoder/*.h
+%{_includedir}/%{name}/vocoder
 %{_libdir}/pkgconfig/%{name}-vocoder.pc
 %{_libdir}/lib%{name}-vocoder*.so
 
@@ -362,8 +401,7 @@ QT-based GUI applications.
 This package contains header files needed by developers.
 
 %files -n %{devqtgui}
-%{_includedir}/%{name}/qtgui/*.h
-%{_includedir}/%{name}/qtgui/CMakeLists.txt
+%{_includedir}/%{name}/qtgui
 %{_libdir}/pkgconfig/%{name}-qtgui.pc
 %{_libdir}/lib%{name}-qtgui*.so
 
@@ -390,7 +428,7 @@ Provides:	%{name}-trellis-devel = %{version}-%{release}
 This package contains header files needed by developers.
 
 %files -n %{devtrellis}
-%{_includedir}/%{name}/trellis/*.h
+%{_includedir}/%{name}/trellis
 %{_libdir}/pkgconfig/%{name}-trellis.pc
 %{_libdir}/lib%{name}-trellis*.so
 
@@ -420,7 +458,7 @@ for GNU Radio.
 This package contains header files needed by developers.
 
 %files -n %{devvideo_sdl}
-%{_includedir}/%{name}/video_sdl/*.h
+%{_includedir}/%{name}/video_sdl
 %{_libdir}/pkgconfig/%{name}-video-sdl.pc
 %{_libdir}/lib%{name}-video-sdl*.so
 
@@ -446,7 +484,7 @@ Provides:	%{name}-wavelet-devel = %{version}-%{release}
 This package contains header files needed by developers.
 
 %files -n %{devwavelet}
-%{_includedir}/%{name}/wavelet/*.h
+%{_includedir}/%{name}/wavelet
 %{_libdir}/lib%{name}-wavelet*.so
 %{_libdir}/pkgconfig/%{name}-wavelet.pc
 
@@ -472,7 +510,7 @@ Provides:	%{name}-fft-devel = %{version}-%{release}
 This package contains header files needed by developers.
 
 %files -n %{devfft}
-%{_includedir}/%{name}/fft/*.h
+%{_includedir}/%{name}/fft
 %{_libdir}/lib%{name}-fft*.so
 %{_libdir}/pkgconfig/%{name}-fft.pc
 
@@ -498,7 +536,7 @@ Provides:	%{name}-filter-devel = %{version}-%{release}
 This package contains header files needed by developers.
 
 %files -n %{devfilter}
-%{_includedir}/%{name}/filter/*.h
+%{_includedir}/%{name}/filter
 %{_libdir}/lib%{name}-filter*.so
 %{_libdir}/pkgconfig/%{name}-filter.pc
 
@@ -524,7 +562,7 @@ Provides:	%{name}-analog-devel = %{version}-%{release}
 This package contains header files needed by developers.
 
 %files -n %{devanalog}
-%{_includedir}/%{name}/analog/*.h
+%{_includedir}/%{name}/analog
 %{_libdir}/lib%{name}-analog*.so
 %{_libdir}/pkgconfig/%{name}-analog.pc
 
@@ -550,7 +588,7 @@ Provides:	%{name}-blocks-devel = %{version}-%{release}
 This package contains header files needed by developers.
 
 %files -n %{devblocks}
-%{_includedir}/%{name}/blocks/*.h
+%{_includedir}/%{name}/blocks
 %{_libdir}/lib%{name}-blocks*.so
 %{_libdir}/pkgconfig/%{name}-blocks.pc
 
@@ -576,7 +614,7 @@ Provides:	%{name}-channels-devel = %{version}-%{release}
 This package contains header files needed by developers.
 
 %files -n %{devchannels}
-%{_includedir}/%{name}/channels/*.h
+%{_includedir}/%{name}/channels
 %{_libdir}/lib%{name}-channels*.so
 %{_libdir}/pkgconfig/%{name}-channels.pc
 
@@ -603,7 +641,7 @@ Provides:	%{name}-fec-devel = %{version}-%{release}
 This package contains header files needed by developers.
 
 %files -n %{devfec}
-%{_includedir}/%{name}/fec/*.h
+%{_includedir}/%{name}/fec
 %{_libdir}/lib%{name}-fec*.so
 %{_libdir}/pkgconfig/%{name}-fec.pc
 
@@ -630,7 +668,7 @@ This package contains header files needed by developers.
 
 %files -n %{devpmt}
 %{_libdir}/lib%{name}-pmt*.so
-%{_includedir}/pmt/*.h
+%{_includedir}/pmt
 
 ############################
 %package -n %{libzeromq}
@@ -655,7 +693,7 @@ This package contains header files needed by developers.
 
 %files -n %{devzeromq}
 %{_libdir}/lib%{name}-zeromq*.so
-%{_includedir}/%{name}/zeromq/*.h
+%{_includedir}/%{name}/zeromq
 %{_libdir}/pkgconfig/%{name}-zeromq.pc
 
 ############################
@@ -681,7 +719,7 @@ This package contains header files needed by developers.
 
 %files -n %{devdtv}
 %{_libdir}/lib%{name}-dtv*.so
-%{_includedir}/%{name}/dtv/*.h
+%{_includedir}/%{name}/dtv
 %{_libdir}/pkgconfig/%{name}-dtv.pc
 
 ############################
@@ -707,7 +745,7 @@ This package contains header files needed by developers.
 
 %files -n %{devdigital}
 %{_libdir}/lib%{name}-digital*.so
-%{_includedir}/%{name}/digital/*.h
+%{_includedir}/%{name}/digital
 %{_libdir}/pkgconfig/%{name}-digital.pc
 
 #######################################################
@@ -739,12 +777,17 @@ Python scripts.
 %dir %{_sysconfdir}/%{name}/conf.d
 %config(noreplace) %{_sysconfdir}/%{name}/conf.d/%{name}-runtime.conf
 %dir %{python_sitelib}/%{name}
+%{python_sitelib}/%{name}/bindtool
+%{python_sitelib}/%{name}/blocktool
 %{python_sitelib}/%{name}/gr
-%{python_sitelib}/%{name}/gru
 %{python_sitelib}/%{name}/__init__.*
 %{python_sitelib}/%{name}/eng_notation.*
 %{python_sitelib}/%{name}/eng_option.*
 %{python_sitelib}/%{name}/gr_unittest.*
+%{python_sitelib}/%{name}/iio
+%{python_sitelib}/%{name}/network
+%{python_sitelib}/%{name}/pdu
+%{python_sitelib}/%{name}/soapy
 
 ############################
 %package -n python-%{name}-vocoder
@@ -1014,7 +1057,6 @@ GRC is a graphical flowgraph editor for the GNU Software Radio.
 %{_datadir}/%{name}/grc
 %{_datadir}/%{name}/themes/*.qss
 %{_iconsdir}/hicolor/*
-%{_iconsdir}/gnome/*
 %{python_sitelib}/%{name}/grc
 
 ############################
@@ -1028,7 +1070,6 @@ Requires:	python-scipy
 This package provides commonly used utilities for GNU Radio.
 
 %files utils
-%{python_sitelib}/%{name}/__pycache__/*
 %{python_sitelib}/%{name}/plot_psd_base.*
 %{python_sitelib}/%{name}/plot_data.*
 %{python_sitelib}/%{name}/pyqt_plot.*
@@ -1102,7 +1143,6 @@ desktop-file-install \
 --dir=%{buildroot}%{_datadir}/applications %{name}-doc.desktop
 
 desktop-file-install \
---add-category='X-Mageia-CrossDesktop' \
 --set-key=Name \
 --set-value='Gnu Radio Companion' \
 --dir=%{buildroot}%{_datadir}/applications %{buildroot}%{_datadir}/%{name}/grc/freedesktop/%{name}-grc.desktop
