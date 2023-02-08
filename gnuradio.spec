@@ -118,6 +118,7 @@ BuildRequires:	python-sphinx
 BuildRequires:	python-yaml
 BuildRequires:	swig
 BuildRequires:	texlive
+BuildRequires:	texlive-unicode-data
 BuildRequires:	xdg-utils
 # For tests
 BuildRequires:	python-scipy
