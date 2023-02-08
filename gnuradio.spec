@@ -53,13 +53,13 @@
 %define devwxgui	%mklibname %{name}-wxgui -d
 
 Name:		gnuradio
-Version:	3.10.4.0
+Version:	3.10.5.1
 Release:	1
 Summary:	Software defined radio framework
 Group:		Communications/Radio
 License:	GPLv3+
-URL:		http://www.gnuradio.org
-Source0:	https://github.com/gnuradio/gnuradio/archive/refs/tags/v%{version}.tar.gz
+URL:		https://www.gnuradio.org
+Source0:	https://github.com/gnuradio/gnuradio/archive/refs/tags/v%{version}/%{name}-%{version}.tar.gz
 #Patch1:		gnuradio-3.7.9-ubu-FindGSL.cmake.patch
 #Patch2:		gnuradio-allow-overriding-GR_PYTHON_DIR-from-cmd-line.patch
 #Patch3:		gnuradio-bind-placeholders.patch
@@ -68,6 +68,7 @@ Source0:	https://github.com/gnuradio/gnuradio/archive/refs/tags/v%{version}.tar.
 BuildRequires:	boost-devel
 BuildRequires:	meson
 BuildRequires:	cmake
+BuildRequires:	ninja
 BuildRequires:	cppzmq-devel
 BuildRequires:	doxygen
 BuildRequires:	git
@@ -1103,10 +1104,12 @@ This package provides commonly used utilities for GNU Radio.
 %build
 export LDFLAGS="%{ldflags} -L%{_libdir}/atlas"
 %global _cmake_module_linker_flags_extra -L%{_libdir}/atlas
-%cmake -DENABLE_INTERNAL_VOLK=OFF \
-       -DGR_PYTHON_DIR=%{python_sitelib}
-       
-%make_build
+%cmake \
+	-DENABLE_INTERNAL_VOLK:BOOL=OFF \
+	-DENABLE_EXAMPLES:BOOL=ON \
+	-DGR_PYTHON_DIR=%{python_sitelib} \
+	-G Ninja
+%ninja_build
 
 %check
 # Some tests fail only in i586 build.
@@ -1125,7 +1128,7 @@ export LD_LIBRARY_PATH=%{buildroot}%{_libdir}
 %endif
 
 %install
-%make_install -C build
+%ninja_install -C build
 
 ############################
 # Desktop files
@@ -1149,9 +1152,15 @@ desktop-file-install \
 desktop-file-install \
 --set-key=Name \
 --set-value='Gnu Radio Companion' \
---dir=%{buildroot}%{_datadir}/applications %{buildroot}%{_datadir}/%{name}/grc/freedesktop/%{name}-grc.desktop
+--dir=%{buildroot}%{_datadir}/applications ./grc/scripts/freedesktop/%{name}-grc.desktop
+
+############################
+# metainfo
+install -dm 0755 %{buildroot}%{_datadir}/metainfo/
+install -pm 0644 grc/scripts/freedesktop/org.gnuradio.grc.metainfo.xml %{buildroot}%{_datadir}/metainfo/
 
 ############################
 # We don't need these:
 find %{buildroot} -name "*.la" -delete
-rm -f %{buildroot}%{_libexecdir}/%{name}/grc_setup_freedesktop
+#rm -f %{buildroot}%{_libexecdir}/%{name}/grc_setup_freedesktop
+
