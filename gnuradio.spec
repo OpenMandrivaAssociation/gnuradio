@@ -99,6 +99,7 @@ BuildRequires:	pkgconfig(uhd) >= 3.15
 BuildRequires:	pkgconfig(volk) >= 2.4
 BuildRequires:	pkgconfig(sndfile)
 BuildRequires:	pkgconfig(libiio)
+BuildRequires:	pkgconfig(spdlog)
 BuildRequires:	python%{pyver}dist(pybind11)
 BuildRequires:	cmake(pybind11)
 BuildRequires:	cmake(SoapySDR)
@@ -1106,6 +1107,9 @@ export LDFLAGS="%{ldflags} -L%{_libdir}/atlas"
 %cmake \
 	-DENABLE_INTERNAL_VOLK:BOOL=OFF \
 	-DENABLE_EXAMPLES:BOOL=ON \
+	-DENABLE_GNURADIO_RUNTIME:BOOL=ON \
+	-DENABLE_GNURADIO_FFT:BOOL=ON \
+	-DENABLE_GR_BLOCKS:BOOL=ON \
 	-DENABLE_GR_QTGUI:BOOL=ON \
 	-DENABLE_GR_NETWORK:BOOL=ON \
 	-DGR_PYTHON_DIR=%{python_sitelib} \
