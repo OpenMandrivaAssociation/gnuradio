@@ -53,7 +53,7 @@
 %define devwxgui	%mklibname %{name}-wxgui -d
 
 Name:		gnuradio
-Version:	3.10.5.1
+Version:	3.10.7.0
 Release:	1
 Summary:	Software defined radio framework
 Group:		Communications/Radio
@@ -319,7 +319,6 @@ This package contains the GNU Radio runtime libraries.
 %{_libdir}/lib%{name}-iio*.so.%{major}{,.*}
 %{_libdir}/lib%{name}-network*.so.%{major}{,.*}
 %{_libdir}/lib%{name}-pdu*.so.%{major}{,.*}
-%{_libdir}/lib%{name}-soapy*.so.%{major}{,.*}
 
 ############################
 %package -n %{devruntime}
@@ -340,17 +339,14 @@ This package contains header files needed by developers.
 %{_includedir}/%{name}/iio
 %{_includedir}/%{name}/network
 %{_includedir}/%{name}/pdu
-%{_includedir}/%{name}/soapy
 %{_libdir}/pkgconfig/%{name}-runtime.pc
 %{_libdir}/pkgconfig/%{name}-iio.pc
 %{_libdir}/pkgconfig/%{name}-network.pc
 %{_libdir}/pkgconfig/%{name}-pdu.pc
-%{_libdir}/pkgconfig/%{name}-soapy.pc
 %{_libdir}/lib%{name}-runtime*.so
 %{_libdir}/lib%{name}-iio*.so
 %{_libdir}/lib%{name}-network*.so
 %{_libdir}/lib%{name}-pdu*.so
-%{_libdir}/lib%{name}-soapy*.so
 %{_datadir}/gnuradio/clang-format.conf
 
 ############################
@@ -793,7 +789,6 @@ Python scripts.
 %{python_sitelib}/%{name}/iio
 %{python_sitelib}/%{name}/network
 %{python_sitelib}/%{name}/pdu
-%{python_sitelib}/%{name}/soapy
 
 ############################
 %package -n python-%{name}-vocoder
@@ -1056,13 +1051,10 @@ GRC is a graphical flowgraph editor for the GNU Software Radio.
 %files companion
 %config(noreplace) %{_sysconfdir}/%{name}/conf.d/grc.conf
 %config(noreplace) %{_sysconfdir}/%{name}/conf.d/00-grc-docs.conf
-%config(noreplace) %{_sysconfdir}/%{name}/conf.d/gr_log_default.conf
 %{_bindir}/%{name}-companion
 %{_datadir}/applications/%{name}-grc.desktop
-%{_datadir}/mime/packages/*
 %{_datadir}/%{name}/grc
 %{_datadir}/%{name}/themes/*.qss
-%{_iconsdir}/hicolor/*
 %{python_sitelib}/%{name}/grc
 
 ############################
