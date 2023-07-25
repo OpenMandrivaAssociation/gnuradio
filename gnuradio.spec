@@ -1,4 +1,4 @@
-%ifarch aarch64
+%ifarch %{aarch64}
 %global _smp_ncpus_max	4
 %endif
 
@@ -101,6 +101,7 @@ BuildRequires:	pkgconfig(sndfile)
 BuildRequires:	pkgconfig(libiio)
 BuildRequires:	python%{pyver}dist(pybind11)
 BuildRequires:	cmake(pybind11)
+BuildRequires:	cmake(SoapySDR)
 BuildRequires:	python-cheetah
 BuildRequires:	python-click
 BuildRequires:	python-click-plugins
@@ -319,6 +320,7 @@ This package contains the GNU Radio runtime libraries.
 %{_libdir}/lib%{name}-iio*.so.%{major}{,.*}
 %{_libdir}/lib%{name}-network*.so.%{major}{,.*}
 %{_libdir}/lib%{name}-pdu*.so.%{major}{,.*}
+%{_libdir}/lib%{name}-soapy*.so.%{major}{,.*}
 
 ############################
 %package -n %{devruntime}
@@ -339,14 +341,17 @@ This package contains header files needed by developers.
 %{_includedir}/%{name}/iio
 %{_includedir}/%{name}/network
 %{_includedir}/%{name}/pdu
+%{_includedir}/%{name}/soapy
 %{_libdir}/pkgconfig/%{name}-runtime.pc
 %{_libdir}/pkgconfig/%{name}-iio.pc
 %{_libdir}/pkgconfig/%{name}-network.pc
 %{_libdir}/pkgconfig/%{name}-pdu.pc
+%{_libdir}/pkgconfig/%{name}-soapy.pc
 %{_libdir}/lib%{name}-runtime*.so
 %{_libdir}/lib%{name}-iio*.so
 %{_libdir}/lib%{name}-network*.so
 %{_libdir}/lib%{name}-pdu*.so
+%{_libdir}/lib%{name}-soapy*.so
 %{_datadir}/gnuradio/clang-format.conf
 
 ############################
@@ -789,6 +794,7 @@ Python scripts.
 %{python_sitelib}/%{name}/iio
 %{python_sitelib}/%{name}/network
 %{python_sitelib}/%{name}/pdu
+%{python_sitelib}/%{name}/soapy
 
 ############################
 %package -n python-%{name}-vocoder
@@ -1100,6 +1106,8 @@ export LDFLAGS="%{ldflags} -L%{_libdir}/atlas"
 %cmake \
 	-DENABLE_INTERNAL_VOLK:BOOL=OFF \
 	-DENABLE_EXAMPLES:BOOL=ON \
+	-DENABLE_GR_QTGUI:BOOL=ON \
+	-DENABLE_GR_NETWORK:BOOL=ON \
 	-DGR_PYTHON_DIR=%{python_sitelib} \
 	-G Ninja
 %ninja_build
