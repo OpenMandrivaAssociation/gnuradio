@@ -1,3 +1,6 @@
+# gnuradio-utils builds with an empty cmake() require which no package provides, exclude it here.
+%global __requires_exclude cmake\\(\\)
+
 %ifarch %{aarch64}
 %global _smp_ncpus_max	4
 %endif
@@ -53,77 +56,89 @@
 %define devwxgui	%mklibname %{name}-wxgui -d
 
 Name:		gnuradio
-Version:	3.10.7.0
+Version:	3.10.12.0
 Release:	1
 Summary:	Software defined radio framework
 Group:		Communications/Radio
 License:	GPLv3+
 URL:		https://www.gnuradio.org
 Source0:	https://github.com/gnuradio/gnuradio/archive/refs/tags/v%{version}/%{name}-%{version}.tar.gz
-#Patch1:		gnuradio-3.7.9-ubu-FindGSL.cmake.patch
-#Patch2:		gnuradio-allow-overriding-GR_PYTHON_DIR-from-cmd-line.patch
-#Patch3:		gnuradio-bind-placeholders.patch
+# cmake: fix build with Boost 1.89.0
+Patch0:		https://github.com/gnuradio/gnuradio/commit/a166bdf73d3e3bfd362c239bbd58852faaad39c4.patch#/fix-build-with-boost1.89.patch
+# Add missing pthread library into gr-uhd/gnuradio-uhd.pc.in
+Patch1:		missing-library.patch
 
-
-BuildRequires:	boost-devel
-BuildRequires:	meson
+BuildRequires:	boost-devel >= 1.88.0
 BuildRequires:	cmake
 BuildRequires:	ninja
-BuildRequires:	cppzmq-devel
 BuildRequires:	doxygen
+BuildRequires:	fdupes
 BuildRequires:	git
-BuildRequires:	qt5-qtbase-devel
-BuildRequires:	gmp-devel
-BuildRequires:	gmpxx-devel
 BuildRequires:	graphviz
 BuildRequires:	gsm-devel
-BuildRequires:	libatlas-devel
+BuildRequires:	pkgconfig(guile-3.0)
 BuildRequires:	libtool
+BuildRequires:	meson
+BuildRequires:	mathjax
 BuildRequires:	mpir-devel
 BuildRequires:	pkgconfig(alsa)
 BuildRequires:	pkgconfig(codec2) >= 0.5
+BuildRequires:	pkgconfig(cppunit)
+BuildRequires:	pkgconfig(cppzmq)
 BuildRequires:	pkgconfig(fftw3)
+BuildRequires:	pkgconfig(fmt)
+BuildRequires:	pkgconfig(gmp)
+BuildRequires:	pkgconfig(gmpxx)
 BuildRequires:	pkgconfig(gsl)
 BuildRequires:	pkgconfig(gtk+-3.0)
-#BuildRequires:	pkgconfig(guile-2.0)
-BuildRequires:	guile-devel
 BuildRequires:	pkgconfig(ice)
-#BuildRequires:	pkgconfig(libcanberra-gtk)
-BuildRequires:	pkgconfig(log4cpp)
+BuildRequires:	pkgconfig(jack)
+BuildRequires:	pkgconfig(libiio)
+BuildRequires:	pkgconfig(libunwind-llvm)
+BuildRequires:	pkgconfig(libusb-1.0)
+BuildRequires:	pkgconfig(libzmq)
+BuildRequires:	pkgconfig(libxml-2.0)
 BuildRequires:	pkgconfig(orc-0.4)
 BuildRequires:	pkgconfig(portaudio-2.0)
+BuildRequires:	pkgconfig(pybind11)
+BuildRequires:	pkgconfig(pygobject-3.0)
 BuildRequires:	pkgconfig(python)
 BuildRequires:	pkgconfig(Qt5Qwt6)
 BuildRequires:	pkgconfig(sdl)
-BuildRequires:	pkgconfig(uhd) >= 3.15
-BuildRequires:	pkgconfig(volk) >= 2.4
 BuildRequires:	pkgconfig(sndfile)
-BuildRequires:	pkgconfig(libiio)
 BuildRequires:	pkgconfig(spdlog)
-BuildRequires:	python%{pyver}dist(pybind11)
+BuildRequires:	pkgconfig(thrift) >= 0.13
+BuildRequires:	pkgconfig(uhd) >= 4.8.0
+BuildRequires:	pkgconfig(volk) >= 3.2
 BuildRequires:	cmake(pybind11)
 BuildRequires:	cmake(SoapySDR)
-BuildRequires:	python-cheetah
-BuildRequires:	python-click
-BuildRequires:	python-click-plugins
-#BuildRequires:	python-ice-devel
-#BuildRequires:	python-gobject
-BuildRequires:	python-gi
-BuildRequires:	python-gi-cairo
-BuildRequires:	python-numpy
-BuildRequires:	python-pyzmq
 BuildRequires:	python-qt5-core
 BuildRequires:	python-qt5-devel
-BuildRequires:	python-mako
-BuildRequires:	python-six
-BuildRequires:	python-sphinx
-BuildRequires:	python-yaml
+BuildRequires:	python%{pyver}dist(ct3)
+BuildRequires:	python%{pyver}dist(click)
+BuildRequires:	python%{pyver}dist(click-plugins)
+BuildRequires:	python%{pyver}dist(jsonschema)
+BuildRequires:	python%{pyver}dist(mako)
+BuildRequires:	python%{pyver}dist(numpy)
+BuildRequires:	python%{pyver}dist(packaging)
+BuildRequires:	python%{pyver}dist(pybind11)
+BuildRequires:	python%{pyver}dist(pygccxml)
+BuildRequires:	python%{pyver}dist(pygobject)
+BuildRequires:	python%{pyver}dist(pyqtgraph)
+BuildRequires:	python%{pyver}dist(pyyaml)
+BuildRequires:	python%{pyver}dist(pyzmq)
+BuildRequires:	python%{pyver}dist(scipy)
+BuildRequires:	python%{pyver}dist(six)
+BuildRequires:	python%{pyver}dist(sphinx)
+BuildRequires:	python%{pyver}dist(thrift)
+BuildRequires:	qt5-qtbase-devel
 BuildRequires:	swig
 BuildRequires:	texlive
 BuildRequires:	texlive-unicode-data
 BuildRequires:	xdg-utils
 # For tests
-BuildRequires:	python-scipy
+BuildRequires:	python%{pyver}dist(pytest)
+BuildRequires:	python%{pyver}dist(scipy)
 
 Requires(pre):	shadow-utils
 
@@ -241,7 +256,47 @@ Group:		Communications/Radio
 This package provides examples of GNU Radio usage using Python.
 
 %files examples
-%{_datadir}/%{name}/examples
+%{_libdir}/%{name}/examples
+
+############################
+%package -n %{name}-bash-completion
+Summary:        Bash Completion for %{name}
+Requires:       %{name} = %{version}
+Requires:       bash-completion
+Supplements:    (%{name} and bash-completion)
+BuildArch:      noarch
+
+%description -n %{name}-bash-completion
+Bash command line completion support for %{name}.
+
+%files -n %{name}-bash-completion
+%{_datadir}/bash-completion/completions/gr_modtool
+
+############################
+%package -n %{name}-fish-completion
+Summary:        Fish Completion for %{name}
+Requires:       %{name} = %{version}
+Supplements:    (%{name} and fish)
+BuildArch:      noarch
+
+%description -n %{name}-fish-completion
+Fish command line completion support for %{name}.
+
+%files -n %{name}-fish-completion
+%{_datadir}/fish/vendor_completions.d/gr_modtool.fish
+
+############################
+%package -n %{name}-zsh-completion
+Summary:        Zsh Completion for %{name}
+Requires:       %{name} = %{version}
+Supplements:    (%{name} and zsh)
+BuildArch:      noarch
+
+%description -n %{name}-zsh-completion
+zsh command line completion support for %{name}.
+
+%files -n %{name}-zsh-completion
+%{_datadir}/zsh/site-functions/_gr_modtool
 
 #######################################################
 #######################################################
@@ -253,7 +308,7 @@ This package provides examples of GNU Radio usage using Python.
 
 ############################
 %package -n %{libuhd}
-Summary:	uhd
+Summary:	UHD libraries for GNURadio
 Group:		System/Libraries
 
 %description -n %{libuhd}
@@ -266,7 +321,7 @@ between the Ettus Research, LLC product line.
 
 ############################
 %package -n %{devuhd}
-Summary:	Uhd devel files
+Summary:	UHD devel files
 Group:		Development/Other
 Requires:	%{libuhd} = %{version}-%{release}
 Requires:	%{devruntime} = %{version}-%{release}
@@ -354,6 +409,7 @@ This package contains header files needed by developers.
 %{_libdir}/lib%{name}-pdu*.so
 %{_libdir}/lib%{name}-soapy*.so
 %{_datadir}/gnuradio/clang-format.conf
+%{_datadir}/gnuradio/.cmake-format.py
 
 ############################
 
@@ -484,7 +540,7 @@ GnuRadio Wavelet module.
 ############################
 %package -n %{devwavelet}
 Summary:	GnuRadio Wavelet development files
-Group:		System/Libraries
+Group:		Development/Libraries
 Requires:	%{libwavelet} = %{version}-%{release}
 Provides:	%{name}-wavelet-devel = %{version}-%{release}
 
@@ -510,7 +566,7 @@ GnuRadio fft module.
 ############################
 %package -n %{devfft}
 Summary:	GnuRadio fft development files
-Group:		System/Libraries
+Group:		Development/Libraries
 Requires:	%{libfft} = %{version}-%{release}
 Provides:	%{name}-fft-devel = %{version}-%{release}
 
@@ -536,7 +592,7 @@ GnuRadio filter module.
 ############################
 %package -n %{devfilter}
 Summary:	GnuRadio filter development files
-Group:		System/Libraries
+Group:		Development/Libraries
 Requires:	%{libfilter} = %{version}-%{release}
 Provides:	%{name}-filter-devel = %{version}-%{release}
 
@@ -562,7 +618,7 @@ GnuRadio analog module.
 ############################
 %package -n %{devanalog}
 Summary:	GnuRadio analog development files
-Group:		System/Libraries
+Group:		Development/Libraries
 Requires:	%{libanalog} = %{version}-%{release}
 Provides:	%{name}-analog-devel = %{version}-%{release}
 
@@ -588,7 +644,7 @@ GnuRadio blocks module.
 ############################
 %package -n %{devblocks}
 Summary:	GnuRadio blocks development files
-Group:		System/Libraries
+Group:		Development/Libraries
 Requires:	%{libblocks} = %{version}-%{release}
 Provides:	%{name}-blocks-devel = %{version}-%{release}
 
@@ -614,7 +670,7 @@ GnuRadio channels module.
 ############################
 %package -n %{devchannels}
 Summary:	GnuRadio channels development files
-Group:		System/Libraries
+Group:		Development/Libraries
 Requires:	%{libchannels} = %{version}-%{release}
 Provides:	%{name}-channels-devel = %{version}-%{release}
 
@@ -641,7 +697,7 @@ GnuRadio fec module.
 ############################
 %package -n %{devfec}
 Summary:	GnuRadio fec development files
-Group:		System/Libraries
+Group:		Development/Libraries
 Requires:	%{libfec} = %{version}-%{release}
 Provides:	%{name}-fec-devel = %{version}-%{release}
 
@@ -667,7 +723,7 @@ GnuRadio pmt module.
 ############################
 %package -n %{devpmt}
 Summary:	GnuRadio pmt development files
-Group:		System/Libraries
+Group:		Development/Libraries
 Requires:	%{libpmt} = %{version}-%{release}
 Provides:	%{name}-pmt-devel = %{version}-%{release}
 
@@ -692,7 +748,7 @@ GnuRadio zeromq module.
 ############################
 %package -n %{devzeromq}
 Summary:	GnuRadio zeromq development files
-Group:		System/Libraries
+Group:		Development/Libraries
 Requires:	%{libzeromq} = %{version}-%{release}
 Provides:	%{name}-zeromq-devel = %{version}-%{release}
 
@@ -718,7 +774,7 @@ GnuRadio dtv module.
 ############################
 %package -n %{devdtv}
 Summary:	GnuRadio dtv development files
-Group:		System/Libraries
+Group:		Development/Libraries
 Requires:	%{libdtv} = %{version}-%{release}
 Provides:	%{name}-dtv-devel = %{version}-%{release}
 
@@ -744,7 +800,7 @@ GnuRadio digital module.
 ############################
 %package -n %{devdigital}
 Summary:	GnuRadio digital development files
-Group:		System/Libraries
+Group:		Development/Libraries
 Requires:	%{libdigital} = %{version}-%{release}
 Provides:	%{name}-digital-devel = %{version}-%{release}
 
@@ -784,18 +840,18 @@ Python scripts.
 %dir %{_sysconfdir}/%{name}
 %dir %{_sysconfdir}/%{name}/conf.d
 %config(noreplace) %{_sysconfdir}/%{name}/conf.d/%{name}-runtime.conf
-%dir %{python_sitelib}/%{name}
-%{python_sitelib}/%{name}/bindtool
-%{python_sitelib}/%{name}/blocktool
-%{python_sitelib}/%{name}/gr
-%{python_sitelib}/%{name}/__init__.*
-%{python_sitelib}/%{name}/eng_notation.*
-%{python_sitelib}/%{name}/eng_option.*
-%{python_sitelib}/%{name}/gr_unittest.*
-%{python_sitelib}/%{name}/iio
-%{python_sitelib}/%{name}/network
-%{python_sitelib}/%{name}/pdu
-%{python_sitelib}/%{name}/soapy
+%dir %{python_sitearch}/%{name}
+%{python_sitearch}/%{name}/bindtool
+%{python_sitearch}/%{name}/blocktool
+%{python_sitearch}/%{name}/gr
+%{python_sitearch}/%{name}/__init__.*
+%{python_sitearch}/%{name}/eng_notation.*
+%{python_sitearch}/%{name}/eng_option.*
+%{python_sitearch}/%{name}/gr_unittest.*
+%{python_sitearch}/%{name}/iio
+%{python_sitearch}/%{name}/network
+%{python_sitearch}/%{name}/pdu
+%{python_sitearch}/%{name}/soapy
 
 ############################
 %package -n python-%{name}-vocoder
@@ -807,7 +863,7 @@ Requires:	python-%{name}-runtime = %{version}-%{release}
 This package contains Python bindings for GNU Radio ATSC decoding.
 
 %files -n python-%{name}-vocoder
-%{python_sitelib}/%{name}/vocoder/*
+%{python_sitearch}/%{name}/vocoder/*
 
 ############################
 %package -n python-%{name}-audio
@@ -821,7 +877,7 @@ audio system.
 
 %files -n python-%{name}-audio
 %config(noreplace) %{_sysconfdir}/%{name}/conf.d/gr-audio.conf
-%{python_sitelib}/%{name}/audio/*
+%{python_sitearch}/%{name}/audio/*
 
 ############################
 %package -n python-%{name}-qtgui
@@ -834,7 +890,7 @@ This package provides the Python wrappers around the GNU Radio QT GUI
 C++ blocks.
 
 %files -n python-%{name}-qtgui
-%{python_sitelib}/%{name}/qtgui
+%{python_sitearch}/%{name}/qtgui
 
 ############################
 %package -n python-%{name}-trellis
@@ -847,7 +903,7 @@ This package provides an implementation of trellis-coded modulation for
 GNU Radio.
 
 %files -n python-%{name}-trellis
-%{python_sitelib}/%{name}/trellis/*
+%{python_sitearch}/%{name}/trellis/*
 
 ############################
 %package -n python-%{name}-uhd
@@ -860,7 +916,7 @@ This package provides the Python interface to the GNU Radio uhd driver
 and daughterboard drivers.
 
 %files -n python-%{name}-uhd
-%{python_sitelib}/%{name}/uhd
+%{python_sitearch}/%{name}/uhd
 
 ############################
 %package -n python-%{name}-video-sdl
@@ -872,7 +928,7 @@ Requires:	python-%{name}-runtime = %{version}-%{release}
 This package provides an interface to the SDL rendering library for GNU Radio.
 
 %files -n python-%{name}-video-sdl
-%{python_sitelib}/%{name}/video_sdl/*
+%{python_sitearch}/%{name}/video_sdl/*
 
 ############################
 %package -n python-%{name}-channels
@@ -884,7 +940,7 @@ Requires:	python-%{name}-runtime = %{version}-%{release}
 GNU Radio channels
 
 %files -n python-%{name}-channels
-%{python_sitelib}/%{name}/channels
+%{python_sitearch}/%{name}/channels
 
 ############################
 %package -n python-%{name}-fec
@@ -896,7 +952,7 @@ Requires:	python-%{name}-runtime = %{version}-%{release}
 GNU Radio fec
 
 %files -n python-%{name}-fec
-%{python_sitelib}/%{name}/fec
+%{python_sitearch}/%{name}/fec
 
 ############################
 %package -n python-%{name}-pmt
@@ -910,7 +966,7 @@ Requires:	python-opengl
 GNU Radio pmt
 
 %files -n python-%{name}-pmt
-%{python_sitelib}/pmt/*
+%{python_sitearch}/pmt/*
 
 ############################
 %package -n python-%{name}-wavelet
@@ -921,7 +977,7 @@ Group:		Development/Python
 GNU Radio wavelet
 
 %files -n python-%{name}-wavelet
-%{python_sitelib}/%{name}/wavelet
+%{python_sitearch}/%{name}/wavelet
 
 ############################
 %package -n python-%{name}-fft
@@ -932,8 +988,8 @@ Group:		Development/Python
 GNU Radio fft
 
 %files -n python-%{name}-fft
-%{python_sitelib}/%{name}/fft
-%{python_sitelib}/%{name}/plot_fft_base.*
+%{python_sitearch}/%{name}/fft
+%{python_sitearch}/%{name}/plot_fft_base.*
 
 ############################
 %package -n python-%{name}-filter
@@ -945,8 +1001,8 @@ Requires:	python-pyqtgraph
 GNU Radio filter
 
 %files -n python-%{name}-filter
-%{python_sitelib}/%{name}/filter
-%{python_sitelib}/%{name}/pyqt_filter.*
+%{python_sitearch}/%{name}/filter
+%{python_sitearch}/%{name}/pyqt_filter.*
 
 ############################
 %package -n python-%{name}-analog
@@ -957,7 +1013,7 @@ Group:		Development/Python
 GNU Radio analog
 
 %files -n python-%{name}-analog
-%{python_sitelib}/%{name}/analog
+%{python_sitearch}/%{name}/analog
 
 ############################
 %package -n python-%{name}-blocks
@@ -968,7 +1024,7 @@ Group:		Development/Python
 GNU Radio blocks
 
 %files -n python-%{name}-blocks
-%{python_sitelib}/%{name}/blocks
+%{python_sitearch}/%{name}/blocks
 
 ############################
 %package -n python-%{name}-modtool
@@ -980,8 +1036,10 @@ GNU Radio modtool
 
 %files -n python-%{name}-modtool
 %config(noreplace) %{_sysconfdir}/%{name}/conf.d/modtool.conf
-%{python_sitelib}/%{name}/modtool
+%{python_sitearch}/%{name}/modtool
 %{_datadir}/%{name}/modtool/templates
+%exclude %{_datadir}/%{name}/modtool/templates/gr-newmod/python/howto/bindings/README.md
+# exclude zero-length file
 
 ############################
 %package -n python-%{name}-ctrlport
@@ -992,7 +1050,7 @@ Group:		Development/Python
 GNU Radio ctrlport
 
 %files -n python-%{name}-ctrlport
-%{python_sitelib}/%{name}/ctrlport
+%{python_sitearch}/%{name}/ctrlport
 
 ############################
 %package -n python-%{name}-zeromq
@@ -1006,7 +1064,7 @@ Requires:	python-opengl
 GNU Radio zeromq
 
 %files -n python-%{name}-zeromq
-%{python_sitelib}/%{name}/zeromq
+%{python_sitearch}/%{name}/zeromq
 
 ############################
 %package -n python-%{name}-dtv
@@ -1020,7 +1078,7 @@ Requires:	python-opengl
 GNU Radio dtv
 
 %files -n python-%{name}-dtv
-%{python_sitelib}/%{name}/dtv
+%{python_sitearch}/%{name}/dtv
 
 ###########################
 %package -n python-%{name}-digital
@@ -1034,7 +1092,7 @@ Requires:	python-opengl
 GNU Radio digital
 
 %files -n python-%{name}-digital
-%{python_sitelib}/%{name}/digital
+%{python_sitearch}/%{name}/digital
 
 #######################################################
 #######################################################
@@ -1050,7 +1108,7 @@ Group:		Communications/Radio
 Requires:	python-%{name}-runtime = %{version}-%{release}
 Requires:	python-gnuradio-pmt = %{version}-%{release}
 Recommends:	%{name}-examples = %{version}-%{release}
-Requires:	python-cheetah
+Requires:	python%{pyver}dist(ct3)
 
 %description companion
 GRC is a graphical flowgraph editor for the GNU Software Radio.
@@ -1062,23 +1120,23 @@ GRC is a graphical flowgraph editor for the GNU Software Radio.
 %{_datadir}/applications/%{name}-grc.desktop
 %{_datadir}/%{name}/grc
 %{_datadir}/%{name}/themes/*.qss
-%{python_sitelib}/%{name}/grc
+%{python_sitearch}/%{name}/grc
 
 ############################
 %package utils
 Summary:	GNU Radio Utilities
 Group:		Communications/Radio
-Requires:	python-matplotlib
-Requires:	python-scipy
+Requires:	python%{pyver}dist(matplotlib)
+Requires:	python%{pyver}dist(scipy)
 
 %description utils
 This package provides commonly used utilities for GNU Radio.
 
 %files utils
-%{python_sitelib}/%{name}/plot_psd_base.*
-%{python_sitelib}/%{name}/plot_data.*
-%{python_sitelib}/%{name}/pyqt_plot.*
-%{python_sitelib}/%{name}/eng_arg.*
+%{python_sitearch}/%{name}/plot_psd_base.*
+%{python_sitearch}/%{name}/plot_data.*
+%{python_sitearch}/%{name}/pyqt_plot.*
+%{python_sitearch}/%{name}/eng_arg.*
 %{_bindir}/%{name}-config-info
 %{_bindir}/gr_filter_design
 %{_bindir}/gr_plot
@@ -1100,10 +1158,12 @@ This package provides commonly used utilities for GNU Radio.
 #######################################################
 %prep
 %autosetup -p1
+# protect the template files from %%cmake macro magic / mangling
+find  gr-utils/modtool/templates/gr-newmod -name CMakeLists.txt -ls -exec mv '{}' '{}.tmpl' \;
 
 %build
-export LDFLAGS="%{ldflags} -L%{_libdir}/atlas"
-%global _cmake_module_linker_flags_extra -L%{_libdir}/atlas
+export LDFLAGS="%{ldflags} -lpython%{pyver}"
+%global _cmake_module_linker_flags_extra -lpython%{pyver}
 %cmake \
 	-DENABLE_INTERNAL_VOLK:BOOL=OFF \
 	-DENABLE_EXAMPLES:BOOL=ON \
@@ -1112,7 +1172,8 @@ export LDFLAGS="%{ldflags} -L%{_libdir}/atlas"
 	-DENABLE_GR_BLOCKS:BOOL=ON \
 	-DENABLE_GR_QTGUI:BOOL=ON \
 	-DENABLE_GR_NETWORK:BOOL=ON \
-	-DGR_PYTHON_DIR=%{python_sitelib} \
+	-DGR_PYTHON_DIR=%{python_sitearch} \
+	-DPYTHON_EXECUTABLE=%{__python3} \
 	-G Ninja
 %ninja_build
 
@@ -1133,6 +1194,8 @@ export LD_LIBRARY_PATH=%{buildroot}%{_libdir}
 %endif
 
 %install
+# move the template files back
+find  gr-utils/modtool/templates/gr-newmod -name CMakeLists.txt.tmpl -execdir mv '{}' 'CMakeLists.txt' \;
 %ninja_install -C build
 
 ############################
@@ -1164,8 +1227,20 @@ desktop-file-install \
 install -dm 0755 %{buildroot}%{_datadir}/metainfo/
 install -pm 0644 grc/scripts/freedesktop/org.gnuradio.grc.metainfo.xml %{buildroot}%{_datadir}/metainfo/
 
+# Compiled examples are installed as "data", but are arch dependent
+install -dm 0755 %{buildroot}%{_libdir}/gnuradio
+mv %{buildroot}%{_datadir}/gnuradio/examples %{buildroot}%{_libdir}/gnuradio/
+
+# insert missing shebangs
+find %{buildroot}%{python_sitearch} -name \*.py -exec grep -L "^#!" {} \; -exec sed -i '1i #!/usr/bin/python3' {} \;
+# insert correct interpreter
+find %{buildroot}%{python_sitearch} -name \*.py -exec sed -i -e 's@#!/usr/bin/env python@#!/usr/bin/python3@g' '{}' \;
+# Make sure py files are marked executable
+find %{buildroot}%{python_sitearch} -name \*.py -exec chmod a+x '{}' \;
+
 ############################
 # We don't need these:
 find %{buildroot} -name "*.la" -delete
 #rm -f %{buildroot}%{_libexecdir}/%{name}/grc_setup_freedesktop
 
+%fdupes %{buildroot}/%{_prefix}
