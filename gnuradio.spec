@@ -57,7 +57,7 @@
 
 Name:		gnuradio
 Version:	3.10.12.0
-Release:	2
+Release:	3
 Summary:	Software defined radio framework
 Group:		Communications/Radio
 License:	GPLv3+
@@ -97,7 +97,6 @@ BuildRequires:	pkgconfig(libiio)
 BuildRequires:	pkgconfig(libunwind-llvm)
 BuildRequires:	pkgconfig(libusb-1.0)
 BuildRequires:	pkgconfig(libzmq)
-BuildRequires:	pkgconfig(libxml-2.0)
 BuildRequires:	pkgconfig(orc-0.4)
 BuildRequires:	pkgconfig(portaudio-2.0)
 BuildRequires:	pkgconfig(pybind11)
@@ -118,6 +117,7 @@ BuildRequires:	python%{pyver}dist(ct3)
 BuildRequires:	python%{pyver}dist(click)
 BuildRequires:	python%{pyver}dist(click-plugins)
 BuildRequires:	python%{pyver}dist(jsonschema)
+BuildRequires:	python%{pyver}dist(lxml)
 BuildRequires:	python%{pyver}dist(mako)
 BuildRequires:	python%{pyver}dist(numpy)
 BuildRequires:	python%{pyver}dist(packaging)
