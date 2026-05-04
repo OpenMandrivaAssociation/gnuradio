@@ -57,7 +57,7 @@
 
 Name:		gnuradio
 Version:	3.10.12.0
-Release:	3
+Release:	4
 Summary:	Software defined radio framework
 Group:		Communications/Radio
 License:	GPLv3+
