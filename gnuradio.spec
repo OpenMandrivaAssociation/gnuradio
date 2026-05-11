@@ -67,6 +67,8 @@ Source0:	https://github.com/gnuradio/gnuradio/archive/refs/tags/v%{version}/%{na
 Patch0:		https://github.com/gnuradio/gnuradio/commit/a166bdf73d3e3bfd362c239bbd58852faaad39c4.patch#/fix-build-with-boost1.89.patch
 # Add missing pthread library into gr-uhd/gnuradio-uhd.pc.in
 Patch1:		missing-library.patch
+# Fix build with udh 4.10+
+Patch2:		gnuradio-3.10.12.0-fix-build-with-uhd-4.10.patch
 
 BuildRequires:	boost-devel >= 1.88.0
 BuildRequires:	cmake
@@ -1162,7 +1164,7 @@ This package provides commonly used utilities for GNU Radio.
 find  gr-utils/modtool/templates/gr-newmod -name CMakeLists.txt -ls -exec mv '{}' '{}.tmpl' \;
 
 %build
-export LDFLAGS="%{ldflags} -lpython%{pyver}"
+export LDFLAGS="%{ldflags} -lpython%{pyver} -luhd"
 %global _cmake_module_linker_flags_extra -lpython%{pyver}
 %cmake \
 	-DENABLE_INTERNAL_VOLK:BOOL=OFF \
@@ -1172,8 +1174,9 @@ export LDFLAGS="%{ldflags} -lpython%{pyver}"
 	-DENABLE_GR_BLOCKS:BOOL=ON \
 	-DENABLE_GR_QTGUI:BOOL=ON \
 	-DENABLE_GR_NETWORK:BOOL=ON \
+	-DENABLE_GR_UHD:BOOL=ON \
 	-DGR_PYTHON_DIR=%{python_sitearch} \
-	-DPYTHON_EXECUTABLE=%{__python3} \
+	-DPYTHON_EXECUTABLE=%{__python} \
 	-G Ninja
 %ninja_build
 

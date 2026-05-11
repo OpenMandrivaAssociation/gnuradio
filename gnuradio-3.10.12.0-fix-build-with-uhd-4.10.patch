@@ -1,0 +1,102 @@
+diff -urN gnuradio-3.10.12.0/cmake/Modules/FindUHD.cmake gnuradio-3.10.12.0-b/cmake/Modules/FindUHD.cmake
+--- gnuradio-3.10.12.0/cmake/Modules/FindUHD.cmake	2025-02-20 01:23:56.000000000 +0000
++++ gnuradio-3.10.12.0-b/cmake/Modules/FindUHD.cmake	2026-05-11 22:33:02.441453346 +0100
+@@ -55,7 +55,7 @@
+ 
+     find_path(
+         UHD_INCLUDE_DIRS
+-        NAMES uhd/config.hpp
++        NAMES uhd.h
+         HINTS $ENV{UHD_DIR}/include ${PC_UHD_INCLUDEDIR}
+         PATHS /usr/local/include /usr/include)
+ 
+@@ -63,7 +63,7 @@
+         UHD_LIBRARIES
+         NAMES uhd
+         HINTS $ENV{UHD_DIR}/lib ${PC_UHD_LIBDIR}
+-        PATHS /usr/local/lib /usr/lib)
++        PATHS /usr/local/lib /usr/lib /usr/lib64)
+ endif(NOT "$ENV{UHD_CONFIG_VERSION_USED}" STREQUAL "TRUE")
+ 
+ if(UHD_LIBRARIES AND UHD_INCLUDE_DIRS)
+diff -urN gnuradio-3.10.12.0/cmake/Modules/GrBoost.cmake gnuradio-3.10.12.0-b/cmake/Modules/GrBoost.cmake
+--- gnuradio-3.10.12.0/cmake/Modules/GrBoost.cmake	2025-02-20 01:23:56.000000000 +0000
++++ gnuradio-3.10.12.0-b/cmake/Modules/GrBoost.cmake	2026-05-11 21:15:15.024921297 +0100
+@@ -93,7 +93,9 @@
+     "1.69.0"
+     "1.69"
+     "1.71.0"
+-    "1.71")
++    "1.71"
++    "1.91.0"
++    "1.91")
+ 
+ # check whether to set REQUIRED or not
+ # if not set, default is to require Boost
+diff -urN gnuradio-3.10.12.0/gr-uhd/CMakeLists.txt gnuradio-3.10.12.0-b/gr-uhd/CMakeLists.txt
+--- gnuradio-3.10.12.0/gr-uhd/CMakeLists.txt	2025-02-20 01:23:56.000000000 +0000
++++ gnuradio-3.10.12.0-b/gr-uhd/CMakeLists.txt	2026-05-11 22:52:30.245484184 +0100
+@@ -10,12 +10,38 @@
+ ########################################################################
+ include(GrBoost)
+ 
+-find_package(UHD "3.9.7")
+-if("${UHD_VERSION}" VERSION_GREATER_EQUAL "4")
+-    set(UHD_FOUR_POINT_OH_RFNOC TRUE)
+-else()
+-    set(UHD_FOUR_POINT_OH_RFNOC FALSE)
+-endif()
++#find_package(UHD "3.9.7")
++IF(NOT UHD_FOUND)
++    find_package(PkgConfig)
++    pkg_check_modules(UHD uhd)
++
++    find_path(
++        UHD_INCLUDE_DIRS
++        NAMES uhd.h
++        HINTS $ENV{UHD_DIR}/include ${PC_UHD_INCLUDEDIR}
++        PATHS /usr/local/include /usr/include)
++
++    find_library(
++        UHD_LIBRARIES
++        NAMES uhd
++        HINTS $ENV{UHD_DIR}/lib ${PC_UHD_LIBDIR}
++        PATHS /usr/local/lib /usr/lib /usr/lib64)
++
++        message(STATUS "UHD LIBRARIES " ${UHD_LIBRARIES})
++        message(STATUS "UHD INCLUDE DIRS " ${UHD_INCLUDE_DIRS})
++
++        INCLUDE(FindPackageHandleStandardArgs)
++        FIND_PACKAGE_HANDLE_STANDARD_ARGS(UHD DEFAULT_MSG UHD_LIBRARIES UHD_INCLUDE_DIRS)
++        MARK_AS_ADVANCED(UHD_LIBRARIES UHD_INCLUDE_DIRS)
++
++        message(STATUS "Found UHD version: ${UHD_VERSION}")
++
++    if("${UHD_VERSION}" VERSION_GREATER_EQUAL "4")
++        set(UHD_FOUR_POINT_OH_RFNOC TRUE)
++    else()
++        set(UHD_FOUR_POINT_OH_RFNOC FALSE)
++    endif()
++ENDIF(NOT UHD_FOUND)
+ 
+ gr_python_check_module("PyQt5" PyQt5 True PYQT5_FOUND)
+ 
+diff -urN gnuradio-3.10.12.0/gr-uhd/lib/CMakeLists.txt gnuradio-3.10.12.0-b/gr-uhd/lib/CMakeLists.txt
+--- gnuradio-3.10.12.0/gr-uhd/lib/CMakeLists.txt	2025-02-20 01:23:56.000000000 +0000
++++ gnuradio-3.10.12.0-b/gr-uhd/lib/CMakeLists.txt	2026-05-11 22:54:53.446888329 +0100
+@@ -32,7 +32,7 @@
+ 
+ add_library(gnuradio-uhd ${LIB_GR_UHD_SOURCES})
+ 
+-target_link_libraries(gnuradio-uhd PUBLIC gnuradio-runtime UHD::UHD)
++target_link_libraries(gnuradio-uhd PUBLIC gnuradio-runtime ${UHD_LIBRARIES})
+ 
+ target_include_directories(
+     gnuradio-uhd PUBLIC $<INSTALL_INTERFACE:include>
+@@ -49,5 +49,5 @@
+ endif(MSVC)
+ 
+ if(BUILD_SHARED_LIBS)
+-    gr_library_foo(gnuradio-uhd UHD)
++    gr_library_foo(gnuradio-uhd ${UHD_LIBRARIES})
+ endif()
