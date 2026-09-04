@@ -3,6 +3,8 @@
 
 %ifarch %{aarch64}
 %global _smp_ncpus_max	4
+# znver1 still OOMs linking libgnuradio-blocks with LTO
+%global _lto_cflags %{nil}
 %endif
 
 %define major		3
