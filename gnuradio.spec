@@ -59,7 +59,7 @@
 
 Name:		gnuradio
 Version:	3.10.12.0
-Release:	8
+Release:	9
 Summary:	Software defined radio framework
 Group:		Communications/Radio
 License:	GPLv3+
@@ -105,7 +105,7 @@ BuildRequires:	pkgconfig(orc-0.4)
 BuildRequires:	pkgconfig(portaudio-2.0)
 BuildRequires:	pkgconfig(pybind11)
 BuildRequires:	pkgconfig(pygobject-3.0)
-BuildRequires:	pkgconfig(python)
+BuildRequires:	pkgconfig(python3)
 BuildRequires:	pkgconfig(Qt5Qwt6)
 BuildRequires:	pkgconfig(sdl)
 BuildRequires:	pkgconfig(sndfile)
@@ -115,8 +115,8 @@ BuildRequires:	pkgconfig(uhd) >= 4.8.0
 BuildRequires:	pkgconfig(volk) >= 3.2
 BuildRequires:	cmake(pybind11)
 BuildRequires:	cmake(SoapySDR)
-BuildRequires:	python-qt5-core
-BuildRequires:	python-qt5-devel
+BuildRequires:	python-qt5-core >= 5.15.11-3
+BuildRequires:	python-qt5-devel >= 5.15.11-3
 BuildRequires:	python%{pyver}dist(ct3)
 BuildRequires:	python%{pyver}dist(click)
 BuildRequires:	python%{pyver}dist(click-plugins)
@@ -1237,9 +1237,12 @@ install -dm 0755 %{buildroot}%{_libdir}/gnuradio
 mv %{buildroot}%{_datadir}/gnuradio/examples %{buildroot}%{_libdir}/gnuradio/
 
 # insert missing shebangs
-find %{buildroot}%{python_sitearch} -name \*.py -exec grep -L "^#!" {} \; -exec sed -i '1i #!/usr/bin/python3' {} \;
+find %{buildroot}%{python_sitearch} -name \*.py -exec grep -L "^#!" {} \; -exec sed -i '1i #!/usr/bin/python' {} \;
 # insert correct interpreter
-find %{buildroot}%{python_sitearch} -name \*.py -exec sed -i -e 's@#!/usr/bin/env python@#!/usr/bin/python3@g' '{}' \;
+find %{buildroot}%{python_sitearch} -name \*.py -exec sed -i \
+	-e 's@#!/usr/bin/env python3@#!/usr/bin/python@g' \
+	-e 's@#!/usr/bin/env python@#!/usr/bin/python@g' \
+	-e 's@#!/usr/bin/python3@#!/usr/bin/python@g' '{}' \;
 # Make sure py files are marked executable
 find %{buildroot}%{python_sitearch} -name \*.py -exec chmod a+x '{}' \;
 
